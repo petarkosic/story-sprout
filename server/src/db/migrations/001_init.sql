@@ -5,8 +5,7 @@ CREATE DATABASE story_sprout;
 CREATE TABLE stories (
     story_id SERIAL,
     story_headline VARCHAR(255) NOT NULL,
-    rating INT,
-    other_story_details TEXT,
+    rating NUMERIC(3,2), 
     PRIMARY KEY (story_id)
 );
 
