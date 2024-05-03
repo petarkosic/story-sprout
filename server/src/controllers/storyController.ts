@@ -12,7 +12,7 @@ export const getStories = async (req: Request, res: Response) => {
 		const stories = await StoryService.getStories(dbClient);
 
 		res.status(200).json({
-			stories: stories,
+			stories,
 		});
 	} catch (err) {
 		const error = err as Error;
