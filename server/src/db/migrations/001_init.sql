@@ -12,7 +12,7 @@ CREATE TABLE stories (
 CREATE TABLE sentences (
     sentence_id SERIAL,
     story_id SERIAL,
-    parent_sentence_id SERIAL,
+    parent_sentence_id INT,
     content TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (sentence_id),
