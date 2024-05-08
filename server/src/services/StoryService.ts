@@ -29,6 +29,24 @@ class StoryService {
 			throw new Error('Server error');
 		}
 	}
+
+	async getSentences(dbClient: PoolClient, id: string) {
+		try {
+			dbClient.query('BEGIN');
+
+			const result = await dbClient.query(
+				'SELECT * FROM sentences WHERE story_id = $1',
+				[id]
+			);
+
+			dbClient.query('COMMIT');
+
+			return result.rows;
+		} catch (error) {
+			dbClient.query('ROLLBACK');
+			throw new Error('Server error');
+		}
+	}
 }
 
 export default new StoryService();
