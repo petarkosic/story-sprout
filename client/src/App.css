@@ -40,3 +40,48 @@
 	justify-content: flex-start;
 	font-weight: bold;
 }
+
+.story-container {
+	text-align: left;
+	display: flex;
+	flex-direction: column;
+	gap: 3rem;
+}
+
+.story-details h1 {
+	margin: 0;
+}
+
+.story-info {
+	display: flex;
+	flex-direction: column;
+}
+
+.story-stats {
+	display: flex;
+	gap: 2rem;
+}
+
+.story-actions {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 2rem;
+}
+
+.story-actions div {
+	width: 25ch;
+	height: max-content;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	border: 1px solid gray;
+	border-radius: 1rem;
+	padding: 1rem;
+}
+
+.story-actions p {
+	margin: 0;
+}
