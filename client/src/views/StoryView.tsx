@@ -1,18 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-
-type Sentence = {
-	sentence_id: number;
-	story_id: number;
-	parent_sentence_id: number;
-	content: string;
-	created_at: Date;
-	story_headline: string;
-	rating: number;
-};
+import SentenceNode from '../components/SentenceNode';
+import { type Sentence } from '../utils/types';
 
 function StoryView() {
-	const [sentences, setSentences] = useState<Sentence[] | undefined>([]);
+	const [data, setData] = useState<Sentence[] | null>(null);
 
 	const { state } = useLocation();
 
@@ -20,12 +12,42 @@ function StoryView() {
 		async function fetcnSentences() {
 			fetch(`http://localhost:5000/api/v1/stories/${state.story.story_id}`)
 				.then((res) => res.json())
-				.then((sentences) => setSentences(sentences.sentences))
+				.then((sentences) => convertToHierarchy(sentences.sentences))
+				.then((data) => setData(data))
 				.catch((err) => console.error(err));
 		}
 
 		fetcnSentences();
 	}, [state.story.story_id]);
+
+	// Function to convert flat data to hierarchical structure
+	async function convertToHierarchy(data: Sentence[]): Promise<Sentence[]> {
+		const buildTree = (node: Sentence) => {
+			const childNodes = data.filter(
+				(item) => item.parent_sentence_id === node.sentence_id
+			);
+
+			if (childNodes.length > 0) {
+				node.children = childNodes.map((child) => buildTree(child));
+			}
+
+			return node;
+		};
+
+		const rootNodes: Sentence[] = data.filter(
+			(item) => item.parent_sentence_id === null
+		);
+
+		const result: Sentence[] = [];
+
+		if (rootNodes.length === 1) {
+			result.push(await buildTree(rootNodes[0]));
+		} else {
+			throw new Error('Multiple root nodes found!');
+		}
+
+		return result;
+	}
 
 	return (
 		<>
@@ -41,14 +63,8 @@ function StoryView() {
 					</div>
 				</div>
 				<div className='story-actions'>
-					{sentences?.map((sentence) => (
-						<div key={sentence.sentence_id}>
-							<p key={sentence.sentence_id}>{sentence.content}</p>
-							<span>Sentence ID: {sentence.sentence_id}</span>
-							<span>
-								Parent Sentence ID: {sentence.parent_sentence_id || 'None'}
-							</span>
-						</div>
+					{data?.map((sentence) => (
+						<SentenceNode key={sentence.sentence_id} sentence={sentence} />
 					))}
 				</div>
 			</div>
