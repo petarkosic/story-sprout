@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import SentenceNode from '../components/SentenceNode';
-import { type Sentence } from '../utils/types';
+import { type Sentence } from '../../../shared/utils/types';
 
 function StoryView() {
 	const [data, setData] = useState<Sentence[] | null>(null);
@@ -18,7 +18,7 @@ function StoryView() {
 		}
 
 		fetcnSentences();
-	}, [state.story.story_id]);
+	}, [state.story.story_id, data?.length]);
 
 	// Function to convert flat data to hierarchical structure
 	async function convertToHierarchy(data: Sentence[]): Promise<Sentence[]> {
@@ -64,7 +64,11 @@ function StoryView() {
 				</div>
 				<div className='story-actions'>
 					{data?.map((sentence) => (
-						<SentenceNode key={sentence.sentence_id} sentence={sentence} />
+						<SentenceNode
+							key={sentence.sentence_id}
+							sentence={sentence}
+							setData={setData}
+						/>
 					))}
 				</div>
 			</div>

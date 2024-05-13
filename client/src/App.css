@@ -74,8 +74,10 @@
 }
 
 .sentence-wrapper {
+	margin-left: 50px;
 	margin-right: 10px;
 	margin-bottom: 10px;
+	border-left: 1px solid gray;
 }
 
 .sentence {
