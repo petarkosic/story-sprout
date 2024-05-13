@@ -40,6 +40,18 @@ cd client
 npm install
 ```
 
+Inside `/server` create a `.env` file.
+
+```
+PORT=<app_port>                 (default = 5000)
+
+POSTGRES_USER=<db_user>         (default = postgres)
+POSTGRES_PASSWORD=<db_password>
+POSTGRES_HOST=<db_host>         (default = localhost)
+POSTGRES_PORT=<db_port>         (default = 5432)
+POSTGRES_DATABASE=postgres      (default = postgres)
+```
+
 To start the server, open `/server` folder and run:
 
 ```
