@@ -1,6 +1,7 @@
 import { config } from 'dotenv';
 import pool from '../db/db';
 import { type Pool, PoolClient } from 'pg';
+import { type Sentence } from '../../../shared/utils/types';
 
 config();
 
@@ -42,6 +43,29 @@ class StoryService {
 			dbClient.query('COMMIT');
 
 			return result.rows;
+		} catch (error) {
+			dbClient.query('ROLLBACK');
+			throw new Error('Server error');
+		}
+	}
+
+	async addSentence(
+		dbClient: PoolClient,
+		sentence: Pick<Sentence, 'story_id' | 'sentence_id' | 'content'>
+	) {
+		const { story_id, sentence_id, content } = sentence;
+
+		try {
+			dbClient.query('BEGIN');
+
+			const result = await dbClient.query(
+				'INSERT INTO sentences (story_id, parent_sentence_id, content) VALUES ($1, $2, $3) RETURNING *',
+				[story_id, sentence_id, content]
+			);
+
+			dbClient.query('COMMIT');
+
+			return result.rows[0];
 		} catch (error) {
 			dbClient.query('ROLLBACK');
 			throw new Error('Server error');
