@@ -13,8 +13,8 @@ StorySprout is a collaborative storytelling platform where users can collectivel
 
 ## Features
 
-**Story Contributions**: Contribute to the growing story.
-**Branching Narratives**: Explore different story paths and contribute to multiple branches.
+- **Story Contributions**: Contribute to the growing story.
+- **Branching Narratives**: Explore different story paths and contribute to multiple branches.
 
 <br/>
 
@@ -70,6 +70,6 @@ Open your browser and go to http://localhost:3000 to view the app.
 
 ## Future Work
 
-**User Authentication**: Sign up and log in to track your contributions and interact with other users.
-**Create Stories**: Allow users to create a new story.
-**Real-Time Updates**: See new contributions as they happen with real-time updates.
+- **User Authentication**: Sign up and log in to track your contributions and interact with other users.
+- **Create Stories**: Allow users to create a new story.
+- **Real-Time Updates**: See new contributions as they happen with real-time updates.
