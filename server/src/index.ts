@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 
 import storyRoute from './routes/storyRoute';
+import authRoute from './routes/authRoute';
 
 const PORT = process.env.PORT || 5000;
 
@@ -15,6 +16,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use('/api/v1', storyRoute);
+app.use('/api/v1/auth', authRoute);
 
 app.listen(PORT, () => {
 	console.log(`Server started on port ${PORT}`);
