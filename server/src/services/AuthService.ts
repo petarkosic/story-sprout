@@ -1,10 +1,16 @@
 import { config } from 'dotenv';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import pool from '../db/db';
 import { type Pool, type PoolClient } from 'pg';
 import { type User, type Error } from '../../../shared/utils/types';
 
 config();
+
+const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET!;
+const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET!;
+const ACCESS_TOKEN_LIFETIME = process.env.ACCESS_TOKEN_LIFETIME!;
+const REFRESH_TOKEN_LIFETIME = process.env.REFRESH_TOKEN_LIFETIME!;
 
 class AuthService {
 	private pool: Pool;
@@ -15,6 +21,18 @@ class AuthService {
 
 	async connect() {
 		return this.pool.connect();
+	}
+
+	generateAccessToken(userID: number) {
+		return jwt.sign({ id: userID }, ACCESS_TOKEN_SECRET, {
+			expiresIn: ACCESS_TOKEN_LIFETIME,
+		});
+	}
+
+	generateRefreshToken(userID: number) {
+		return jwt.sign({ id: userID }, REFRESH_TOKEN_SECRET, {
+			expiresIn: REFRESH_TOKEN_LIFETIME,
+		});
 	}
 
 	async login(dbClient: PoolClient, email: string, password: string) {
@@ -43,8 +61,11 @@ class AuthService {
 				user_id,
 				first_name,
 				last_name,
-				email: user_email,
+				email: userEmail,
 			} = result.rows[0];
+
+			const accessToken = this.generateAccessToken(user_id);
+			const refreshToken = this.generateRefreshToken(user_id);
 
 			await dbClient.query('COMMIT');
 
@@ -52,7 +73,9 @@ class AuthService {
 				user_id,
 				first_name,
 				last_name,
-				email: user_email,
+				email: userEmail,
+				accessToken,
+				refreshToken,
 				message: 'Login successful',
 			};
 		} catch (err) {
@@ -64,12 +87,7 @@ class AuthService {
 	}
 
 	async register(dbClient: PoolClient, userObj: User) {
-		const {
-			first_name: firstName,
-			last_name: lastName,
-			email,
-			password,
-		} = userObj;
+		const { firstName, lastName, email, password } = userObj;
 
 		try {
 			await dbClient.query('BEGIN');
@@ -89,20 +107,10 @@ class AuthService {
 				[firstName, lastName, email, hashedPassword]
 			);
 
-			const {
-				user_id,
-				first_name,
-				last_name,
-				email: user_email,
-			} = result.rows[0];
-
 			await dbClient.query('COMMIT');
 
 			return {
-				user_id,
-				first_name,
-				last_name,
-				email: user_email,
+				user_id: result.rows[0].user_id,
 				message: 'Registration successful',
 			};
 		} catch (err) {

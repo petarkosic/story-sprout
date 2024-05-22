@@ -13,7 +13,28 @@ export const login = async (req: Request, res: Response) => {
 			return res.status(401).json({ message: user.message });
 		}
 
-		res.status(200).json({ user });
+		const {
+			accessToken,
+			refreshToken,
+			user_id,
+			email: userEmail,
+			first_name,
+			last_name,
+		} = user;
+
+		res.cookie('refreshToken', refreshToken, {
+			httpOnly: true,
+			secure: true,
+			sameSite: 'strict',
+		});
+
+		res.status(200).json({
+			accessToken,
+			user_id,
+			email: userEmail,
+			first_name,
+			last_name,
+		});
 	} catch (err) {
 		const error = err as Error;
 		console.error(error.message);
@@ -41,4 +62,9 @@ export const register = async (req: Request, res: Response) => {
 	} finally {
 		dbClient.release();
 	}
+};
+
+export const logout = async (req: Request, res: Response) => {
+	res.clearCookie('refreshToken');
+	res.status(200).json({ message: 'Logged out successfully' });
 };
