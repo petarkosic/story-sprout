@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { registerUser } from '../features/auth/authSlice';
 
 type RegisterProps = {
 	toggleView: () => void;
@@ -9,31 +11,17 @@ const Register = ({ toggleView }: RegisterProps) => {
 	const [lastName, setLastName] = useState<string>('');
 	const [email, setEmail] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
-
-	async function sendData() {
-		const data = {
-			first_name: firstName,
-			last_name: lastName,
-			email: email,
-			password: password,
-		};
-
-		const response = await fetch('http://localhost:5000/api/v1/auth/register', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(data),
-		});
-
-		const json = await response.json();
-		console.log({ json });
-	}
+	const dispatch = useDispatch();
+	const { status, error } = useSelector((state) => state.auth);
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 
-		sendData();
+		dispatch(registerUser({ firstName, lastName, email, password }));
+
+		if (status === 'success') {
+			toggleView();
+		}
 	};
 
 	return (
@@ -78,6 +66,8 @@ const Register = ({ toggleView }: RegisterProps) => {
 				</div>
 				<button type='submit'>Register</button>
 			</form>
+			{status === 'loading' && <p>Loading...</p>}
+			{error && <p>{error}</p>}
 			<button onClick={toggleView}>Already have an account?</button>
 		</div>
 	);

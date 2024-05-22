@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser } from '../features/auth/authSlice';
+import { useNavigate } from 'react-router-dom';
 
 type LoginProps = {
 	toggleView: () => void;
@@ -7,24 +10,15 @@ type LoginProps = {
 const Login = ({ toggleView }: LoginProps) => {
 	const [email, setEmail] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
-
-	async function sendData() {
-		const response = await fetch('http://localhost:5000/api/v1/auth/login', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({ email, password }),
-		});
-
-		const json = await response.json();
-		console.log({ json });
-	}
+	const navigate = useNavigate();
+	const dispatch = useDispatch();
+	const { status, error } = useSelector((state) => state.auth);
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 
-		sendData();
+		dispatch(loginUser({ email, password }));
+		navigate('/');
 	};
 
 	return (
@@ -51,6 +45,8 @@ const Login = ({ toggleView }: LoginProps) => {
 				</div>
 				<button type='submit'>Login</button>
 			</form>
+			{status === 'loading' && <p>Loading...</p>}
+			{error && <p>{error}</p>}
 			<button onClick={toggleView}>Not registered yet?</button>
 		</div>
 	);
