@@ -7,6 +7,8 @@ import StoryView from './views/StoryView.tsx';
 import Navbar from './components/Navbar.tsx';
 import NotFound from './views/NotFound.tsx';
 import AuthView from './views/AuthView.tsx';
+import { Provider } from 'react-redux';
+import store from './store.ts';
 
 const Root = () => {
 	return (
@@ -44,6 +46,8 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
 	<React.StrictMode>
-		<RouterProvider router={router} />
+		<Provider store={store}>
+			<RouterProvider router={router} />
+		</Provider>
 	</React.StrictMode>
 );
