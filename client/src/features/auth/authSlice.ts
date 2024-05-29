@@ -17,6 +17,7 @@ export const loginUser = createAsyncThunk(
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify(credentials),
+				credentials: 'include',
 			});
 
 			const data = await response.json();
@@ -63,11 +64,66 @@ export const registerUser = createAsyncThunk(
 	}
 );
 
+export const refreshToken = createAsyncThunk(
+	'auth/refreshToken',
+	async (_, { rejectWithValue }) => {
+		try {
+			const response = await fetch(
+				'http://localhost:5000/api/v1/auth/refresh',
+				{
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					credentials: 'include',
+				}
+			);
+
+			const data = await response.json();
+
+			if (response.ok) {
+				localStorage.setItem('accessToken', data.newAccessToken);
+
+				return data.newAccessToken;
+			} else {
+				return rejectWithValue(data.message);
+			}
+		} catch (error) {
+			return rejectWithValue(error);
+		}
+	}
+);
+
+export const logoutUser = createAsyncThunk(
+	'auth/logoutUser',
+	async (_, { rejectWithValue }) => {
+		try {
+			const response = await fetch('http://localhost:5000/api/v1/auth/logout', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
+			});
+
+			if (response.ok) {
+				localStorage.removeItem('accessToken');
+
+				return;
+			} else {
+				return rejectWithValue(response.statusText);
+			}
+		} catch (error) {
+			return rejectWithValue(error);
+		}
+	}
+);
+
 const authSlice = createSlice({
 	name: 'auth',
 	initialState,
 	reducers: {
-		logoutUser: (state) => {
+		clearState: (state) => {
 			state.user = null;
 			state.accessToken = null;
 			state.error = '';
@@ -101,10 +157,21 @@ const authSlice = createSlice({
 			.addCase(registerUser.rejected, (state, action) => {
 				state.status = 'failure';
 				state.error = action.error.message!;
+			})
+			.addCase(refreshToken.pending, (state) => {
+				state.status = 'loading';
+			})
+			.addCase(refreshToken.fulfilled, (state, action) => {
+				state.status = 'success';
+				state.accessToken = action.payload;
+			})
+			.addCase(refreshToken.rejected, (state, action) => {
+				state.status = 'failure';
+				state.error = action.error.message!;
 			});
 	},
 });
 
-export const { logoutUser } = authSlice.actions;
+export const { clearState } = authSlice.actions;
 
 export default authSlice.reducer;

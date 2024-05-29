@@ -1,17 +1,19 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { logoutUser } from '../features/auth/authSlice';
+import { clearState, logoutUser } from '../features/auth/authSlice';
+import { AppDispatch, RootState } from '../store';
 
 const Navbar = () => {
 	const navigate = useNavigate();
-	const dispatch = useDispatch();
-	const user = useSelector((state) => state.auth.user);
+	const dispatch = useDispatch<AppDispatch>();
+	const user = useSelector((state: RootState) => state.auth.user);
 
 	const handleLogin = () => {
 		navigate('/auth');
 	};
 
 	const handleLoguot = () => {
+		dispatch(clearState());
 		dispatch(logoutUser());
 		navigate('/auth');
 	};

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../features/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
+import type { RootState, AppDispatch } from '../store';
 
 type LoginProps = {
 	toggleView: () => void;
@@ -11,13 +12,15 @@ const Login = ({ toggleView }: LoginProps) => {
 	const [email, setEmail] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
 	const navigate = useNavigate();
-	const dispatch = useDispatch();
-	const { status, error } = useSelector((state) => state.auth);
+	const dispatch = useDispatch<AppDispatch>();
+	const { status, error } = useSelector((state: RootState) => state.auth);
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 
+		// @ts-expect-error - Expected 0 arguments, but got 1.
 		dispatch(loginUser({ email, password }));
+
 		navigate('/');
 	};
 

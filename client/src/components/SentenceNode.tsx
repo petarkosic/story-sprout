@@ -1,5 +1,8 @@
 import { useState } from 'react';
-import { type Sentence } from '../../../shared/utils/types';
+import { useDispatch } from 'react-redux';
+import { refreshToken } from '../features/auth/authSlice';
+import type { Sentence } from '../../../shared/utils/types';
+import type { AppDispatch } from '../store';
 
 type SentenceNodeProps = {
 	sentence: Sentence;
@@ -10,6 +13,7 @@ const SentenceNode = ({ sentence, setData }: SentenceNodeProps) => {
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 	const [inputValue, setInputValue] = useState<string>('');
 	const [parentSentence, setParentSentence] = useState<Sentence | null>(null);
+	const dispatch = useDispatch<AppDispatch>();
 
 	async function addSentence() {
 		try {
@@ -17,6 +21,7 @@ const SentenceNode = ({ sentence, setData }: SentenceNodeProps) => {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
+					authorization: `Bearer ${localStorage.getItem('accessToken')}`,
 				},
 				body: JSON.stringify({
 					story_id: parentSentence?.story_id,
@@ -25,7 +30,13 @@ const SentenceNode = ({ sentence, setData }: SentenceNodeProps) => {
 				}),
 			});
 
+			if (response.status === 401) {
+				await dispatch(refreshToken());
+				await addSentence();
+			}
+
 			const data = await response.json();
+
 			setData((prevData) => [...prevData!, data]);
 		} catch (error) {
 			console.error(error);
