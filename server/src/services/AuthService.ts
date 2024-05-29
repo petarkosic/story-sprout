@@ -2,8 +2,8 @@ import { config } from 'dotenv';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import pool from '../db/db';
-import { type Pool, type PoolClient } from 'pg';
-import { type User, type Error } from '../../../shared/utils/types';
+import type { Pool, PoolClient } from 'pg';
+import type { User, Error } from '../../../shared/utils/types';
 
 config();
 
@@ -115,6 +115,22 @@ class AuthService {
 			};
 		} catch (err) {
 			await dbClient.query('ROLLBACK');
+			const error = err as Error;
+			console.error(error.message);
+			throw new Error(error.message);
+		}
+	}
+
+	async refreshToken(refreshToken: string) {
+		try {
+			const { id } = jwt.verify(refreshToken, REFRESH_TOKEN_SECRET) as {
+				id: number;
+			};
+
+			const newAccessToken = this.generateAccessToken(id);
+
+			return { newAccessToken };
+		} catch (err) {
 			const error = err as Error;
 			console.error(error.message);
 			throw new Error(error.message);

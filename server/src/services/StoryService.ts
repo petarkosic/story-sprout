@@ -1,7 +1,7 @@
 import { config } from 'dotenv';
 import pool from '../db/db';
-import { type Pool, type PoolClient } from 'pg';
-import { type Sentence } from '../../../shared/utils/types';
+import type { Pool, PoolClient } from 'pg';
+import type { Sentence } from '../../../shared/utils/types';
 
 config();
 
