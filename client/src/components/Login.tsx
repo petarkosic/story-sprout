@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../features/auth/authSlice';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import type { RootState, AppDispatch } from '../store';
 
 type LoginProps = {
@@ -12,6 +12,7 @@ const Login = ({ toggleView }: LoginProps) => {
 	const [email, setEmail] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
 	const navigate = useNavigate();
+	const { state } = useLocation();
 	const dispatch = useDispatch<AppDispatch>();
 	const { status, error } = useSelector((state: RootState) => state.auth);
 
@@ -26,6 +27,7 @@ const Login = ({ toggleView }: LoginProps) => {
 
 	return (
 		<div className='auth-container'>
+			{state?.error}
 			<h2>Login</h2>
 			<form onSubmit={handleSubmit}>
 				<div>

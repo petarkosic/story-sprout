@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { refreshToken } from '../features/auth/authSlice';
 import type { Sentence } from '../../../shared/utils/types';
-import type { AppDispatch } from '../store';
+import type { AppDispatch, RootState } from '../store';
+import { useNavigate } from 'react-router-dom';
 
 type SentenceNodeProps = {
 	sentence: Sentence;
@@ -13,9 +14,15 @@ const SentenceNode = ({ sentence, setData }: SentenceNodeProps) => {
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 	const [inputValue, setInputValue] = useState<string>('');
 	const [parentSentence, setParentSentence] = useState<Sentence | null>(null);
+	const navigate = useNavigate();
 	const dispatch = useDispatch<AppDispatch>();
+	const user = useSelector((state: RootState) => state.auth.user);
 
 	async function addSentence() {
+		if (!user) {
+			navigate('/auth', { state: { error: 'Login to add a sentence' } });
+			return;
+		}
 		try {
 			const response = await fetch('http://localhost:5000/api/v1/stories', {
 				method: 'POST',
