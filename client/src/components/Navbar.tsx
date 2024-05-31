@@ -26,7 +26,6 @@ const Navbar = () => {
 					<>
 						<div>
 							{user?.first_name} {user?.last_name[0] + '.'}
-							<p></p>
 						</div>
 						<button className='button-logout' onClick={handleLoguot}>
 							logout
