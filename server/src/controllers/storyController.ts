@@ -45,13 +45,14 @@ export const getSentences = async (req: Request, res: Response) => {
 export const addSentence = async (req: Request, res: Response) => {
 	const dbClient = await StoryService.connect();
 
-	const { story_id, sentence_id, content } = req.body;
+	const { story_id, sentence_id, content, user_id } = req.body;
 
 	try {
 		const sentence = {
 			story_id,
 			sentence_id,
 			content,
+			user_id,
 		};
 		const newSentence = await StoryService.addSentence(dbClient, sentence);
 
