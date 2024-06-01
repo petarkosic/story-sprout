@@ -1,16 +1,15 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { refreshToken } from '../features/auth/authSlice';
-import type { Sentence } from '../../../shared/utils/types';
+import type { NewSentence, Sentence } from '../../../shared/utils/types';
 import type { AppDispatch, RootState } from '../store';
 import { useNavigate } from 'react-router-dom';
+import { addSentence } from '../features/sentences/sentencesSlice';
 
 type SentenceNodeProps = {
 	sentence: Sentence;
-	setData: React.Dispatch<React.SetStateAction<Sentence[] | null>>;
 };
 
-const SentenceNode = ({ sentence, setData }: SentenceNodeProps) => {
+const SentenceNode = ({ sentence }: SentenceNodeProps) => {
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 	const [inputValue, setInputValue] = useState<string>('');
 	const [parentSentence, setParentSentence] = useState<Sentence | null>(null);
@@ -18,45 +17,26 @@ const SentenceNode = ({ sentence, setData }: SentenceNodeProps) => {
 	const dispatch = useDispatch<AppDispatch>();
 	const user = useSelector((state: RootState) => state.auth.user);
 
-	async function addSentence() {
-		if (!user) {
-			navigate('/auth', { state: { error: 'Login to add a sentence' } });
-			return;
-		}
-		try {
-			const response = await fetch('http://localhost:5000/api/v1/stories', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-				},
-				body: JSON.stringify({
-					story_id: parentSentence?.story_id,
-					sentence_id: parentSentence?.sentence_id,
-					content: inputValue,
-				}),
-			});
-
-			if (response.status === 401) {
-				await dispatch(refreshToken());
-				await addSentence();
-			}
-
-			const data = await response.json();
-
-			setData((prevData) => [...prevData!, data]);
-		} catch (error) {
-			console.error(error);
-		}
-	}
-
 	const handleCloseModal = () => {
 		setIsModalOpen(false);
 		setInputValue('');
 	};
 
 	const handleSubmit = () => {
-		addSentence();
+		if (!user) {
+			navigate('/auth', { state: { error: 'Login to add a sentence' } });
+			return;
+		}
+
+		dispatch(
+			addSentence({
+				story_id: parentSentence?.story_id,
+				sentence_id: parentSentence?.sentence_id,
+				content: inputValue,
+				user_id: user.user_id,
+			} as NewSentence)
+		);
+
 		handleCloseModal();
 	};
 
@@ -81,11 +61,7 @@ const SentenceNode = ({ sentence, setData }: SentenceNodeProps) => {
 				</button>
 			</div>
 			{sentence.children?.map((child: Sentence) => (
-				<SentenceNode
-					key={child.sentence_id}
-					sentence={child}
-					setData={setData}
-				/>
+				<SentenceNode key={child.sentence_id} sentence={child} />
 			))}
 
 			{isModalOpen && (

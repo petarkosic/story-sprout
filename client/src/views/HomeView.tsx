@@ -1,28 +1,21 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import '../App.css';
 import { useNavigate } from 'react-router-dom';
-
-type Story = {
-	story_id: number;
-	story_headline: string;
-	rating: number;
-};
+import { useDispatch, useSelector } from 'react-redux';
+import type { AppDispatch, RootState } from '../store';
+import { getStories } from '../features/stories/storiesSlice';
+import type { Story } from '../../../shared/utils/types';
 
 function App() {
-	const [stories, setStories] = useState<Story[] | undefined>([]);
-
 	const navigate = useNavigate();
+	const dispatch = useDispatch<AppDispatch>();
+	const stories: Story[] = useSelector(
+		(state: RootState) => state.stories.stories
+	);
 
 	useEffect(() => {
-		async function fetchStories() {
-			fetch('http://localhost:5000/api/v1/stories')
-				.then((res) => res.json())
-				.then((stories) => setStories(stories.stories))
-				.catch((err) => console.error(err));
-		}
-
-		fetchStories();
-	}, []);
+		dispatch(getStories());
+	}, [dispatch]);
 
 	function handleClick(story: Story) {
 		navigate(`story/${story.story_id}`, { state: { story } });
