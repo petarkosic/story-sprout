@@ -4,6 +4,7 @@ import type { NewSentence, Sentence } from '../../../shared/utils/types';
 import type { AppDispatch, RootState } from '../store';
 import { useNavigate } from 'react-router-dom';
 import { addSentence } from '../features/sentences/sentencesSlice';
+import SentenceCard from './SentenceCard';
 
 type SentenceNodeProps = {
 	sentence: Sentence;
@@ -40,26 +41,18 @@ const SentenceNode = ({ sentence }: SentenceNodeProps) => {
 		handleCloseModal();
 	};
 
-	const handleAddSentence = (sentence: Sentence) => {
-		setParentSentence(sentence);
-		setIsModalOpen((prev) => !prev);
-	};
-
 	const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setInputValue(e.target.value);
 	};
 
 	return (
 		<div key={sentence.sentence_id} className='sentence-wrapper'>
-			<div className='sentence'>
-				<p>{sentence.content}</p>
-				<button
-					className='button-add'
-					onClick={() => handleAddSentence(sentence)}
-				>
-					+
-				</button>
-			</div>
+			<SentenceCard
+				sentence={sentence}
+				setParentSentence={setParentSentence}
+				setIsModalOpen={setIsModalOpen}
+			/>
+
 			{sentence.children?.map((child: Sentence) => (
 				<SentenceNode key={child.sentence_id} sentence={child} />
 			))}
