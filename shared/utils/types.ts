@@ -29,3 +29,10 @@ export type NewSentence = Pick<
 export type Error = {
 	message: string;
 };
+
+export type User = {
+	firstName: string;
+	lastName: string;
+	email: string;
+	password: string;
+};

@@ -2,6 +2,9 @@ import { SetStateAction, useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { Sentence } from '../../../shared/utils/types';
 import type { RootState } from '../store';
+import StoryPath from './StoryPath';
+import { formatDate } from '../utils/formatDate';
+import { findStoryPath } from '../utils/findStoryPath';
 
 type SentenceNodeProps = {
 	sentence: Sentence;
@@ -15,6 +18,7 @@ const SentenceCard = ({
 	setIsModalOpen,
 }: SentenceNodeProps) => {
 	const [storyPath, setStoryPath] = useState<Sentence[]>([]);
+	const [isStoryPathOpen, setIsStoryPathOpen] = useState<boolean>(false);
 
 	const { sentences } = useSelector((state: RootState) => state.sentences);
 
@@ -23,41 +27,9 @@ const SentenceCard = ({
 		setIsModalOpen((prev) => !prev);
 	};
 
-	const formatDate = (dateString: Date) => {
-		const date = new Date(dateString);
-		const day = String(date.getUTCDate()).padStart(2, '0');
-		const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-		const year = date.getUTCFullYear();
-		return `${day}. ${month}. ${year}.`;
-	};
-
-	const findSentenceById = (
-		sentences: Sentence[],
-		sentenceId: number
-	): Sentence | null => {
-		for (const sentence of sentences) {
-			if (sentence.sentence_id === sentenceId) return sentence;
-
-			if (sentence.children) {
-				const found = findSentenceById(sentence.children, sentenceId);
-
-				if (found) return found;
-			}
-		}
-		return null;
-	};
-
-	const findStoryPath = (sentenceId: number, sentences: Sentence[]) => {
-		const path = [];
-		let currentSentence = findSentenceById(sentences, sentenceId);
-
-		while (currentSentence) {
-			path.unshift(currentSentence);
-			currentSentence = currentSentence.parent_sentence_id
-				? findSentenceById(sentences, currentSentence.parent_sentence_id)
-				: null;
-		}
-
+	const findStorySoFar = (sentenceId: number, sentences: Sentence[]) => {
+		setIsStoryPathOpen(true);
+		const path = findStoryPath(sentenceId, sentences);
 		setStoryPath(path);
 	};
 
@@ -72,7 +44,7 @@ const SentenceCard = ({
 						{formatDate(sentence.created_at)}
 					</span>
 				</div>
-				<p onClick={() => findStoryPath(sentence.sentence_id, sentences)}>
+				<p onClick={() => findStorySoFar(sentence.sentence_id, sentences)}>
 					{sentence.content}
 				</p>
 				<button
@@ -83,15 +55,11 @@ const SentenceCard = ({
 				</button>
 			</div>
 
-			{storyPath.length > 0 && (
-				<div className='story-path'>
-					<h2>Story Path</h2>
-					<ol>
-						{storyPath.map((sentence) => (
-							<li key={sentence.sentence_id}>{sentence.content}</li>
-						))}
-					</ol>
-				</div>
+			{isStoryPathOpen && (
+				<StoryPath
+					storyPath={storyPath}
+					setIsStoryPathOpen={setIsStoryPathOpen}
+				/>
 			)}
 		</>
 	);
