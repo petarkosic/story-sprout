@@ -86,6 +86,28 @@ class StoryService {
 			throw new Error('Server error');
 		}
 	}
+
+	async addNewStory(
+		dbClient: PoolClient,
+		story_headline: string,
+		user_id: number
+	) {
+		try {
+			dbClient.query('BEGIN');
+
+			const result = await dbClient.query(
+				'INSERT INTO stories (story_headline, user_id) VALUES ($1, $2) RETURNING *',
+				[story_headline, user_id]
+			);
+
+			dbClient.query('COMMIT');
+
+			return result.rows[0];
+		} catch (error) {
+			dbClient.query('ROLLBACK');
+			throw new Error('Server error');
+		}
+	}
 }
 
 export default new StoryService();
