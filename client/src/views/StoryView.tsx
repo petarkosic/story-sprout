@@ -1,12 +1,14 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import SentenceNode from '../components/SentenceNode';
 import type { Sentence } from '../../../shared/utils/types';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store';
 import { getSentences } from '../features/sentences/sentencesSlice';
+import AddNewSentenceModal from '../components/AddNewSentenceModal';
 
 function StoryView() {
+	const [isModalOpen, setIsModalOpen] = useState(false);
 	const { state } = useLocation();
 
 	const dispatch = useDispatch<AppDispatch>();
@@ -35,6 +37,20 @@ function StoryView() {
 				</div>
 				{status === 'loading' && <p>Loading...</p>}
 				<div className='story-actions'>
+					{sentences.length === 0 && (
+						<button className='button-add' onClick={() => setIsModalOpen(true)}>
+							+
+						</button>
+					)}
+
+					{isModalOpen && (
+						<AddNewSentenceModal
+							setIsModalOpen={setIsModalOpen}
+							parentSentence={null}
+							storyId={state.story.story_id}
+						/>
+					)}
+
 					{sentences?.map((sentence: Sentence) => (
 						<SentenceNode key={sentence.sentence_id} sentence={sentence} />
 					))}
