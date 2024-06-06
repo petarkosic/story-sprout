@@ -83,10 +83,12 @@ const sentencesSlice = createSlice({
 		builder
 			.addCase(getSentences.pending, (state) => {
 				state.status = 'loading';
+				state.error = '';
 			})
 			.addCase(getSentences.fulfilled, (state, action) => {
 				state.status = 'success';
 				state.sentences = action.payload;
+				state.error = '';
 			})
 			.addCase(getSentences.rejected, (state, action) => {
 				state.status = 'failure';

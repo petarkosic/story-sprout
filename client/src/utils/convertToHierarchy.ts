@@ -4,6 +4,10 @@ import { Sentence } from '../../../shared/utils/types';
 export async function convertToHierarchy(
 	data: Sentence[]
 ): Promise<Sentence[]> {
+	if (data.length === 0) {
+		return [];
+	}
+
 	const buildTree = (node: Sentence) => {
 		const childNodes = data.filter(
 			(item) => item.parent_sentence_id === node.sentence_id
