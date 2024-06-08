@@ -32,6 +32,12 @@ function App() {
 						onClick={() => handleClick(story)}
 					>
 						<p className='story-headline'>{story.story_headline}</p>
+						<div className='story-author'>
+							<p>
+								{story?.first_name} {story?.last_name?.[0] + '.'}
+							</p>
+							<p>{story.rating || 'Not rated yet'}</p>
+						</div>
 					</div>
 				))}
 			</div>
