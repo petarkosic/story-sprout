@@ -38,7 +38,10 @@ function StoryView() {
 				{status === 'loading' && <p>Loading...</p>}
 				<div className='story-actions'>
 					{sentences.length === 0 && (
-						<button className='button-add' onClick={() => setIsModalOpen(true)}>
+						<button
+							className='button-add no-sentences'
+							onClick={() => setIsModalOpen(true)}
+						>
 							+
 						</button>
 					)}

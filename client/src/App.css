@@ -12,6 +12,17 @@
 	align-items: center;
 }
 
+.navbar-container > p {
+	margin-right: auto;
+}
+
+.user-info {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 1rem;
+}
+
 .button-login {
 	padding: 0.5rem 3rem;
 	border-radius: 5px;
@@ -23,9 +34,21 @@
 	font-size: 1rem;
 }
 
-.button-login:hover {
+.button-login:hover,
+.button-logout:hover {
 	cursor: pointer;
 	background: #eee;
+}
+
+.button-logout {
+	padding: 0.5rem 3rem;
+	border-radius: 5px;
+	border: none;
+	border: 1px solid black;
+	outline: none;
+	background: transparent;
+	color: black;
+	font-size: 1rem;
 }
 
 .auth-container {
@@ -219,6 +242,10 @@
 	cursor: pointer;
 	border: 1px solid blue;
 	color: blue;
+}
+
+.button-add.no-sentences {
+	width: 5%;
 }
 
 .story-path-wrapper {

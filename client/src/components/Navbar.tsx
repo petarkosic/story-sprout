@@ -52,7 +52,7 @@ const Navbar = () => {
 			<div className='navbar-container'>
 				<p onClick={() => navigate('/')}>logo</p>
 				{user?.first_name ? (
-					<>
+					<div className='user-info'>
 						<div>
 							{user?.first_name} {user?.last_name[0] + '.'}
 						</div>
@@ -87,7 +87,7 @@ const Navbar = () => {
 						<button className='button-logout' onClick={handleLoguot}>
 							logout
 						</button>
-					</>
+					</div>
 				) : (
 					<button className='button-login' onClick={handleLogin}>
 						login
