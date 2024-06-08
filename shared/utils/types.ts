@@ -3,6 +3,8 @@ export type Story = {
 	story_headline: string;
 	rating: number | null;
 	user_id?: number | null;
+	first_name?: string | null;
+	last_name?: string | null;
 };
 
 export type Sentence = {

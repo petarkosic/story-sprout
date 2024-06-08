@@ -20,7 +20,12 @@ class StoryService {
 		try {
 			dbClient.query('BEGIN');
 
-			const result = await dbClient.query('SELECT * FROM stories');
+			const result = await dbClient.query(`
+				SELECT s.story_id, s.story_headline, s.rating, u.user_id, u.first_name, u.last_name
+				FROM stories s
+				LEFT JOIN users u
+				ON u.user_id = s.user_id;
+				`);
 
 			dbClient.query('COMMIT');
 
