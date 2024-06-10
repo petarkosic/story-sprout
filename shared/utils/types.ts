@@ -5,6 +5,7 @@ export type Story = {
 	user_id?: number | null;
 	first_name?: string | null;
 	last_name?: string | null;
+	number_of_contributions: number;
 };
 
 export type Sentence = {

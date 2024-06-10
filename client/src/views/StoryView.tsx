@@ -27,10 +27,17 @@ function StoryView() {
 			<div className='story-container'>
 				<div className='story-details'>
 					<h1>{state.story.story_headline}</h1>
+					<p className='story-author-name'>
+						{state.story?.first_name} {state.story?.last_name?.[0] + '.'}
+					</p>
 					<div className='story-info'>
-						<p>Story details</p>
 						<div className='story-stats'>
-							<p>Number of contributions: </p>
+							<p>
+								{state.story.number_of_contributions}{' '}
+								{state.story.number_of_contributions === 1
+									? 'Contribution'
+									: 'Contributions'}
+							</p>
 							<p>Rating: {state.story.rating || 'Not rated yet'}</p>
 						</div>
 					</div>

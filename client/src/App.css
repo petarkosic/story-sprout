@@ -115,7 +115,6 @@
 .action {
 	text-align: left;
 	font-size: 2rem;
-	margin-top: 0;
 }
 
 .container {
@@ -172,10 +171,6 @@
 	gap: 3rem;
 }
 
-.story-details h1 {
-	margin: 0;
-}
-
 .story-info {
 	display: flex;
 	flex-direction: column;
@@ -192,6 +187,10 @@
 .story-author p {
 	margin: 0;
 	padding: 0;
+	color: #999;
+}
+
+.story-author-name {
 	color: #999;
 }
 

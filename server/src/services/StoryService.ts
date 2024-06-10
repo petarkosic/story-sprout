@@ -21,7 +21,18 @@ class StoryService {
 			dbClient.query('BEGIN');
 
 			const result = await dbClient.query(`
-				SELECT s.story_id, s.story_headline, s.rating, u.user_id, u.first_name, u.last_name
+				SELECT 
+					s.story_id, 
+					s.story_headline, 
+					s.rating, 
+					u.user_id, 
+					u.first_name, 
+					u.last_name,
+					(
+						SELECT COUNT(sentence_id)::INT
+						FROM sentences
+						WHERE story_id = s.story_id
+					) AS number_of_contributions
 				FROM stories s
 				LEFT JOIN users u
 				ON u.user_id = s.user_id;

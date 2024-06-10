@@ -71,5 +71,5 @@ Open your browser and go to http://localhost:3000 to view the app.
 ## Future Work
 
 [x] **User Authentication**: Sign up and log in to track your contributions and interact with other users.
-[ ] **Create Stories**: Allow users to create a new story.
-[ ] **Real-Time Updates**: See new contributions as they happen with real-time updates.
+[x] **Create Stories**: Allow users to create a new story.
+[] **Rating System**: Allow users to rate other users' stories.
