@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, ScrollRestoration } from 'react-router-dom';
 import SentenceNode from '../components/SentenceNode';
 import type { Sentence } from '../../../shared/utils/types';
 import { useDispatch, useSelector } from 'react-redux';
@@ -24,6 +24,7 @@ function StoryView() {
 
 	return (
 		<>
+			<ScrollRestoration />
 			<div className='story-container'>
 				<div className='story-details'>
 					<h1>{state.story.story_headline}</h1>
