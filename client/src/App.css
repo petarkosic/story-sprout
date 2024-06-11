@@ -380,3 +380,64 @@
 	cursor: pointer;
 	background-color: #ccc;
 }
+
+.stars {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.star {
+	background-image: url('/star_rating.png');
+	background-size: 512px 512px;
+	background-repeat: no-repeat;
+}
+
+.icon-star {
+	height: 18px;
+	width: 80px;
+}
+
+.star-rating-5 {
+	background-position: -2px 0px;
+}
+
+.star-rating-4 {
+	background-position: -2px -20px;
+}
+
+.star-rating-4-5 {
+	background-position: -2px -40px;
+}
+
+.star-rating-3 {
+	background-position: -2px -60px;
+}
+
+.star-rating-3-5 {
+	background-position: -2px -80px;
+}
+
+.star-rating-2 {
+	background-position: -2px -100px;
+}
+
+.star-rating-2-5 {
+	background-position: -2px -120px;
+}
+
+.star-rating-1 {
+	background-position: -2px -140px;
+}
+
+.star-rating-1-5 {
+	background-position: -2px -160px;
+}
+
+.star-rating-0 {
+	background-position: -2px -180px;
+}
+
+.star-rating-0-5 {
+	background-position: -2px -200px;
+}
