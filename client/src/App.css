@@ -391,6 +391,7 @@
 	background-image: url('/star_rating.png');
 	background-size: 512px 512px;
 	background-repeat: no-repeat;
+	filter: hue-rotate(180deg) saturate(2.5);
 }
 
 .icon-star {

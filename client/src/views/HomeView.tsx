@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../store';
 import { getStories } from '../features/stories/storiesSlice';
 import type { Story } from '../../../shared/utils/types';
+import StarRating from '../components/StarRating';
 
 function App() {
 	const navigate = useNavigate();
@@ -36,7 +37,7 @@ function App() {
 							<p>
 								{story?.first_name} {story?.last_name?.[0] + '.'}
 							</p>
-							<p>{story.rating || 'Not rated yet'}</p>
+							<StarRating rating={story.rating || 0} />
 						</div>
 					</div>
 				))}
