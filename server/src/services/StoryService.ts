@@ -24,7 +24,6 @@ class StoryService {
 				SELECT 
 					s.story_id, 
 					s.story_headline, 
-					s.rating, 
 					u.user_id, 
 					u.first_name, 
 					u.last_name,
@@ -59,7 +58,7 @@ class StoryService {
 					s.content,
 					s.created_at,
 					st.story_headline,
-					st.rating,
+					st.user_id,
 					u.user_id,
 					u.first_name,
 					u.last_name,

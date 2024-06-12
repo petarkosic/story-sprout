@@ -1,4 +1,4 @@
-INSERT INTO stories (story_headline, rating) 
+INSERT INTO stories (story_headline, user_id) 
 VALUES 
 ('Echoes of Eternity', NULL),
 ('Whispers in the Mist', NULL),
