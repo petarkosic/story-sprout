@@ -6,6 +6,7 @@ export type Story = {
 	first_name?: string | null;
 	last_name?: string | null;
 	number_of_contributions: number;
+	average_rating: number;
 };
 
 export type Sentence = {

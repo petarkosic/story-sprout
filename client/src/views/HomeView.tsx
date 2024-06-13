@@ -37,7 +37,7 @@ function App() {
 							<p>
 								{story?.first_name} {story?.last_name?.[0] + '.'}
 							</p>
-							<StarRating rating={story.rating || 0} />
+							<StarRating rating={story?.average_rating || 0} />
 						</div>
 					</div>
 				))}

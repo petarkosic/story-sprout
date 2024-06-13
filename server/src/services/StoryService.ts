@@ -27,14 +27,23 @@ class StoryService {
 					u.user_id, 
 					u.first_name, 
 					u.last_name,
-					(
-						SELECT COUNT(sentence_id)::INT
-						FROM sentences
-						WHERE story_id = s.story_id
-					) AS number_of_contributions
+					COALESCE(cnt.number_of_contributions, 0) AS number_of_contributions,
+					COALESCE(ROUND(AVG(r.rating), 2), 0) AS average_rating
 				FROM stories s
 				LEFT JOIN users u
-				ON u.user_id = s.user_id;
+				ON u.user_id = s.user_id
+				LEFT JOIN ratings r
+				ON r.story_id = s.story_id
+				LEFT JOIN (
+					SELECT 
+						story_id, 
+						COUNT(sentence_id)::INT AS number_of_contributions
+					FROM 
+						sentences
+					GROUP BY 
+						story_id
+				) cnt ON cnt.story_id = s.story_id
+				GROUP BY s.story_id, s.story_headline, u.user_id, u.first_name, u.last_name, cnt.number_of_contributions
 				`);
 
 			dbClient.query('COMMIT');
