@@ -1,14 +1,14 @@
 INSERT INTO stories (story_headline, user_id) 
 VALUES 
-('Echoes of Eternity', NULL),
-('Whispers in the Mist', NULL),
-('Beyond the Veil', NULL),
-('Lost in Time', NULL),
-('Threads of Fate', NULL),
-('Shadows of Destiny', NULL),
-('Sirens'' Song', NULL),
-('Chronicles of the Unknown', NULL),
-('Realm of Imagination', NULL);
+('Echoes of Eternity', 1),
+('Whispers in the Mist', 2),
+('Beyond the Veil', 3),
+('Lost in Time', 5),
+('Threads of Fate', 3),
+('Shadows of Destiny', 6),
+('Sirens'' Song', 1),
+('Chronicles of the Unknown', 2),
+('Realm of Imagination', 4);
 
 
 INSERT INTO sentences (story_id, parent_sentence_id, content)
