@@ -91,3 +91,28 @@ export const addNewStory = async (req: Request, res: Response) => {
 		dbClient.release();
 	}
 };
+
+export const rateStory = async (req: Request, res: Response) => {
+	const dbClient = await StoryService.connect();
+
+	const { story_id, user_id, rating } = req.body;
+
+	try {
+		const newRating = await StoryService.rateStory(
+			dbClient,
+			story_id,
+			user_id,
+			rating
+		);
+
+		res.status(200).json({
+			newRating,
+		});
+	} catch (err) {
+		const error = err as Error;
+		console.error(error.message);
+		res.status(500).json({ message: error.message });
+	} finally {
+		dbClient.release();
+	}
+};

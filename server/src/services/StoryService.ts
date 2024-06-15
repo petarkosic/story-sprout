@@ -132,6 +132,39 @@ class StoryService {
 			throw new Error('Server error');
 		}
 	}
+
+	async rateStory(
+		dbClient: PoolClient,
+		story_id: string,
+		user_id: string,
+		rating: number
+	) {
+		try {
+			dbClient.query('BEGIN');
+
+			const checkDuplicate = await dbClient.query(
+				'SELECT * FROM ratings WHERE story_id = $1 AND user_id = $2',
+				[story_id, user_id]
+			);
+
+			if ((checkDuplicate.rowCount || 0) > 0) {
+				dbClient.query('ROLLBACK');
+				throw new Error('You have already rated this story');
+			}
+
+			const result = await dbClient.query(
+				'INSERT INTO ratings (story_id, user_id, rating) VALUES ($1, $2, $3) RETURNING *',
+				[story_id, user_id, rating]
+			);
+
+			dbClient.query('COMMIT');
+
+			return result.rows[0];
+		} catch (error) {
+			dbClient.query('ROLLBACK');
+			throw new Error('Server error');
+		}
+	}
 }
 
 export default new StoryService();

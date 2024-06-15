@@ -4,6 +4,7 @@ import {
 	addSentence,
 	getSentences,
 	getStories,
+	rateStory,
 } from '../controllers/storyController';
 import verifyToken from '../middleware/verifyToken';
 
@@ -13,5 +14,6 @@ router.get('/stories', getStories);
 router.get('/stories/:id', getSentences);
 router.post('/stories', verifyToken, addSentence);
 router.post('/stories/new', verifyToken, addNewStory);
+router.post('/stories/ratings', verifyToken, rateStory);
 
 export default router;
