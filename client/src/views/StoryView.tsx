@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store';
 import { getSentences } from '../features/sentences/sentencesSlice';
 import AddNewSentenceModal from '../components/AddNewSentenceModal';
-import StarRating from '../components/StarRating';
+import Rating from '../components/Rating';
 
 function StoryView() {
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -40,7 +40,7 @@ function StoryView() {
 									? 'Contribution'
 									: 'Contributions'}
 							</p>
-							<StarRating rating={state?.story?.rating || 0} />
+							<Rating storyId={state.story.story_id} />
 						</div>
 					</div>
 				</div>

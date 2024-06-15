@@ -63,6 +63,43 @@ export const addNewStory = createAsyncThunk(
 	}
 );
 
+export const rateStory = createAsyncThunk(
+	'stories/rateStory',
+	async (
+		{
+			story_id,
+			user_id,
+			rating,
+		}: { story_id: string; user_id: string; rating: number },
+		{ rejectWithValue }
+	) => {
+		try {
+			const response = await fetch(
+				'http://localhost:5000/api/v1/stories/ratings',
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+					},
+					body: JSON.stringify({ story_id, user_id, rating }),
+					credentials: 'include',
+				}
+			);
+
+			const data = await response.json();
+
+			if (response.ok) {
+				return data.story;
+			} else {
+				return rejectWithValue(data.message);
+			}
+		} catch (error) {
+			return rejectWithValue(error);
+		}
+	}
+);
+
 const storiesSlice = createSlice({
 	name: 'stories',
 	initialState,
@@ -79,6 +116,26 @@ const storiesSlice = createSlice({
 			.addCase(getStories.rejected, (state, action) => {
 				state.status = 'failure';
 				state.error = action.error.message!;
+			})
+			.addCase(addNewStory.pending, (state) => {
+				state.status = 'loading';
+			})
+			.addCase(addNewStory.fulfilled, (state) => {
+				state.status = 'success';
+			})
+			.addCase(addNewStory.rejected, (state, action) => {
+				state.status = 'failure';
+				state.error = action.error.message!;
+			})
+			.addCase(rateStory.pending, (state) => {
+				state.status = 'loading';
+			})
+			.addCase(rateStory.fulfilled, (state, action) => {
+				state.status = 'success';
+				state.stories = action.payload;
+			})
+			.addCase(rateStory.rejected, (state) => {
+				state.status = 'failure';
 			});
 	},
 });

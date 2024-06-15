@@ -199,6 +199,20 @@
 	gap: 2rem;
 }
 
+.story-stats > div {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.story-stats .rate-action {
+	margin-right: 1rem;
+}
+
+.story-stats span {
+	font-size: 1.5rem;
+}
+
 .story-actions {
 	width: 100%;
 	display: flex;
