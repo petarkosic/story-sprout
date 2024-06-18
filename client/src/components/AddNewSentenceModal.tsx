@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { AppDispatch, RootState } from '../store';
 import { addSentence } from '../features/sentences/sentencesSlice';
 import { NewSentence, Sentence } from '../../../shared/utils/types';
+import { clearState } from '../features/auth/authSlice';
 
 type AddNewSentenceModalProps = {
 	setIsModalOpen: React.Dispatch<SetStateAction<boolean>>;
@@ -23,6 +24,7 @@ const AddNewSentenceModal = ({
 
 	const handleSubmit = () => {
 		if (!user) {
+			dispatch(clearState());
 			navigate('/auth', { state: { error: 'Login to add a sentence' } });
 			return;
 		}

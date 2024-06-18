@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { clearState, logoutUser } from '../features/auth/authSlice';
-import { AppDispatch, RootState } from '../store';
+import type { AppDispatch, RootState } from '../store';
 import { addNewStory } from '../features/stories/storiesSlice';
 
 const Navbar = () => {
@@ -33,6 +33,7 @@ const Navbar = () => {
 
 	const handleSubmit = () => {
 		if (!user) {
+			dispatch(clearState());
 			navigate('/auth', { state: { error: 'Login to add a sentence' } });
 			return;
 		}

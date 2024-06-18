@@ -66,7 +66,7 @@ export const registerUser = createAsyncThunk(
 
 export const refreshToken = createAsyncThunk(
 	'auth/refreshToken',
-	async (_, { rejectWithValue }) => {
+	async (_, { rejectWithValue, dispatch }) => {
 		try {
 			const response = await fetch(
 				'http://localhost:5000/api/v1/auth/refresh',
@@ -86,9 +86,13 @@ export const refreshToken = createAsyncThunk(
 
 				return data.newAccessToken;
 			} else {
+				await dispatch(logoutUser()).unwrap();
+
 				return rejectWithValue(data.message);
 			}
 		} catch (error) {
+			await dispatch(logoutUser()).unwrap();
+
 			return rejectWithValue(error);
 		}
 	}
@@ -108,6 +112,7 @@ export const logoutUser = createAsyncThunk(
 
 			if (response.ok) {
 				localStorage.removeItem('accessToken');
+				localStorage.removeItem('user');
 
 				return;
 			} else {
@@ -168,6 +173,12 @@ const authSlice = createSlice({
 			.addCase(refreshToken.rejected, (state, action) => {
 				state.status = 'failure';
 				state.error = action.error.message!;
+			})
+			.addCase(logoutUser.fulfilled, (state) => {
+				state.user = null;
+				state.accessToken = null;
+				state.error = '';
+				state.status = 'idle';
 			});
 	},
 });
