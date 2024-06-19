@@ -129,7 +129,7 @@ class StoryService {
 			return result.rows[0];
 		} catch (error) {
 			dbClient.query('ROLLBACK');
-			throw new Error('Server error');
+			throw error;
 		}
 	}
 
@@ -162,7 +162,7 @@ class StoryService {
 			return result.rows[0];
 		} catch (error) {
 			dbClient.query('ROLLBACK');
-			throw new Error('Server error');
+			throw error;
 		}
 	}
 }

@@ -17,7 +17,7 @@ export const getStories = async (req: Request, res: Response) => {
 	} catch (err) {
 		const error = err as Error;
 		console.error(error.message);
-		res.status(500).json({ message: error.message });
+		res.status(500).json({ success: false, message: error.message });
 	} finally {
 		dbClient.release();
 	}
@@ -36,7 +36,7 @@ export const getSentences = async (req: Request, res: Response) => {
 	} catch (err) {
 		const error = err as Error;
 		console.error(error.message);
-		res.status(500).json({ message: error.message });
+		res.status(500).json({ success: false, message: error.message });
 	} finally {
 		dbClient.release();
 	}
@@ -54,15 +54,17 @@ export const addSentence = async (req: Request, res: Response) => {
 			content,
 			user_id,
 		};
-		const newSentence = await StoryService.addSentence(dbClient, sentence);
+
+		await StoryService.addSentence(dbClient, sentence);
 
 		res.status(200).json({
-			newSentence,
+			success: true,
+			message: 'New sentence added successfully',
 		});
 	} catch (err) {
 		const error = err as Error;
 		console.error(error.message);
-		res.status(500).json({ message: error.message });
+		res.status(500).json({ success: false, message: error.message });
 	} finally {
 		dbClient.release();
 	}
@@ -74,19 +76,16 @@ export const addNewStory = async (req: Request, res: Response) => {
 	const { story_headline, user_id } = req.body;
 
 	try {
-		const newStory = await StoryService.addNewStory(
-			dbClient,
-			story_headline,
-			user_id
-		);
+		await StoryService.addNewStory(dbClient, story_headline, user_id);
 
 		res.status(200).json({
-			newStory,
+			success: true,
+			message: 'Story added successfully',
 		});
 	} catch (err) {
 		const error = err as Error;
 		console.error(error.message);
-		res.status(500).json({ message: error.message });
+		res.status(500).json({ success: false, message: error.message });
 	} finally {
 		dbClient.release();
 	}
@@ -98,20 +97,16 @@ export const rateStory = async (req: Request, res: Response) => {
 	const { story_id, user_id, rating } = req.body;
 
 	try {
-		const newRating = await StoryService.rateStory(
-			dbClient,
-			story_id,
-			user_id,
-			rating
-		);
+		await StoryService.rateStory(dbClient, story_id, user_id, rating);
 
 		res.status(200).json({
-			newRating,
+			success: true,
+			message: 'Rating added successfully',
 		});
 	} catch (err) {
 		const error = err as Error;
 		console.error(error.message);
-		res.status(500).json({ message: error.message });
+		res.status(500).json({ success: false, message: error.message });
 	} finally {
 		dbClient.release();
 	}
