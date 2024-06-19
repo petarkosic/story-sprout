@@ -3,7 +3,7 @@ import { useLocation, ScrollRestoration } from 'react-router-dom';
 import SentenceNode from '../components/SentenceNode';
 import type { Sentence } from '../../../shared/utils/types';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../store';
+import type { AppDispatch, RootState } from '../store';
 import { getSentences } from '../features/sentences/sentencesSlice';
 import AddNewSentenceModal from '../components/AddNewSentenceModal';
 import Rating from '../components/Rating';

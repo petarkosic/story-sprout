@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { refreshToken } from '../auth/authSlice';
 
 const initialState = {
 	stories: [],
@@ -37,6 +38,7 @@ export const addNewStory = createAsyncThunk(
 		{ story_headline, user_id }: { story_headline: string; user_id: string },
 		{ rejectWithValue, dispatch }
 	) => {
+		let tokenRefreshed = false;
 		try {
 			const response = await fetch('http://localhost:5000/api/v1/stories/new', {
 				method: 'POST',
@@ -49,6 +51,14 @@ export const addNewStory = createAsyncThunk(
 			});
 
 			const data = await response.json();
+
+			if (response.status === 401 && !tokenRefreshed) {
+				tokenRefreshed = true;
+
+				await dispatch(refreshToken()).unwrap();
+
+				return dispatch(addNewStory({ story_headline, user_id })).unwrap();
+			}
 
 			if (response.ok) {
 				dispatch(getStories());
@@ -71,8 +81,10 @@ export const rateStory = createAsyncThunk(
 			user_id,
 			rating,
 		}: { story_id: string; user_id: string; rating: number },
-		{ rejectWithValue }
+		{ rejectWithValue, dispatch }
 	) => {
+		let tokenRefreshed = false;
+
 		try {
 			const response = await fetch(
 				'http://localhost:5000/api/v1/stories/ratings',
@@ -89,6 +101,14 @@ export const rateStory = createAsyncThunk(
 
 			const data = await response.json();
 
+			if (response.status === 401 && !tokenRefreshed) {
+				tokenRefreshed = true;
+
+				await dispatch(refreshToken()).unwrap();
+
+				return dispatch(rateStory({ story_id, user_id, rating })).unwrap();
+			}
+
 			if (response.ok) {
 				return data.story;
 			} else {
@@ -103,7 +123,11 @@ export const rateStory = createAsyncThunk(
 const storiesSlice = createSlice({
 	name: 'stories',
 	initialState,
-	reducers: {},
+	reducers: {
+		clearError: (state) => {
+			state.error = '';
+		},
+	},
 	extraReducers: (builder) => {
 		builder
 			.addCase(getStories.pending, (state) => {
@@ -134,10 +158,13 @@ const storiesSlice = createSlice({
 				state.status = 'success';
 				state.stories = action.payload;
 			})
-			.addCase(rateStory.rejected, (state) => {
+			.addCase(rateStory.rejected, (state, action) => {
 				state.status = 'failure';
+				state.error = action.payload as string;
 			});
 	},
 });
+
+export const { clearError } = storiesSlice.actions;
 
 export default storiesSlice.reducer;
