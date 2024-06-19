@@ -456,3 +456,15 @@
 .star-rating-0-5 {
 	background-position: -2px -200px;
 }
+
+.rating-stars a {
+	text-decoration: none;
+	color: gray;
+	font-size: 2rem;
+	transition: color 0.2s;
+}
+
+.rating-stars a.hover,
+.rating-stars a.selected {
+	color: gold;
+}

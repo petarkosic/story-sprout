@@ -1,23 +1,35 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../store';
-import { rateStory } from '../features/stories/storiesSlice';
+import type { AppDispatch, RootState } from '../store';
+import { clearError, rateStory } from '../features/stories/storiesSlice';
+import { useNavigate } from 'react-router-dom';
 
 function Rating({ storyId }: { storyId: string }) {
 	const [rating, setRating] = useState(0);
 	const [hover, setHover] = useState(0);
+	const navigate = useNavigate();
 	const dispatch = useDispatch<AppDispatch>();
 	const user = useSelector((state: RootState) => state.auth.user);
+	const { error } = useSelector((state: RootState) => state.stories);
 
 	const handleClick = (index: number) => {
+		if (!user) {
+			navigate('/auth');
+		}
 		setRating(index);
 	};
 
+	setTimeout(() => {
+		dispatch(clearError());
+	}, 5000);
+
 	useEffect(() => {
-		if (rating > 0) {
-			dispatch(rateStory({ story_id: storyId, user_id: user.user_id, rating }));
+		if (rating > 0 && user) {
+			dispatch(
+				rateStory({ story_id: storyId, user_id: user?.user_id, rating })
+			);
 		}
-	}, [rating, dispatch, storyId, user.user_id]);
+	}, [rating, dispatch, storyId, user?.user_id]);
 
 	return (
 		<div>
@@ -39,6 +51,7 @@ function Rating({ storyId }: { storyId: string }) {
 					</span>
 				);
 			})}
+			{error && <p>{error}</p>}
 		</div>
 	);
 }
