@@ -43,6 +43,7 @@ export const addSentence = createAsyncThunk(
 		{ story_id, sentence_id, content, user_id }: NewSentence,
 		{ rejectWithValue, dispatch }
 	) => {
+		let tokenRefreshed = false;
 		try {
 			const response = await fetch('http://localhost:5000/api/v1/stories', {
 				method: 'POST',
@@ -56,10 +57,13 @@ export const addSentence = createAsyncThunk(
 
 			const data = await response.json();
 
-			if (response.status === 401) {
-				dispatch(refreshToken());
+			if (response.status === 401 && !tokenRefreshed) {
+				tokenRefreshed = true;
+				await dispatch(refreshToken()).unwrap();
 
-				dispatch(addSentence({ story_id, sentence_id, content, user_id }));
+				return dispatch(
+					addSentence({ story_id, sentence_id, content, user_id })
+				).unwrap();
 			}
 
 			if (response.ok) {

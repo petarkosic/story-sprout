@@ -51,6 +51,11 @@ POSTGRES_PASSWORD=<db_password>
 POSTGRES_HOST=<db_host>         (default = localhost)
 POSTGRES_PORT=<db_port>         (default = 5432)
 POSTGRES_DATABASE=postgres      (default = postgres)
+
+ACCESS_TOKEN_SECRET=<some_secret>
+REFRESH_TOKEN_SECRET=<some_other_secret>
+ACCESS_TOKEN_LIFETIME='15m'
+REFRESH_TOKEN_LIFETIME='15d'
 ```
 
 To start the server, open `/server` folder and run:
