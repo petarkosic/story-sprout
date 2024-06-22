@@ -5,6 +5,7 @@ const initialState = {
 	stories: [],
 	status: 'idle',
 	error: '',
+	hasAlreadyRated: false,
 };
 
 export const getStories = createAsyncThunk(
@@ -120,6 +121,49 @@ export const rateStory = createAsyncThunk(
 	}
 );
 
+export const checkIfUserRatedStory = createAsyncThunk(
+	'stories/checkIfUserRatedStory',
+	async (
+		{ story_id, user_id }: { story_id: string; user_id: string },
+		{ rejectWithValue, dispatch }
+	) => {
+		let tokenRefreshed = false;
+
+		try {
+			const response = await fetch(
+				'http://localhost:5000/api/v1/stories/ratings/rated',
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+					},
+					body: JSON.stringify({ story_id, user_id }),
+					credentials: 'include',
+				}
+			);
+
+			const data = await response.json();
+
+			if (response.status === 401 && !tokenRefreshed) {
+				tokenRefreshed = true;
+
+				await dispatch(refreshToken()).unwrap();
+
+				return dispatch(checkIfUserRatedStory({ story_id, user_id })).unwrap();
+			}
+
+			if (response.ok) {
+				return data;
+			} else {
+				return rejectWithValue(data.message);
+			}
+		} catch (error) {
+			return rejectWithValue(error);
+		}
+	}
+);
+
 const storiesSlice = createSlice({
 	name: 'stories',
 	initialState,
@@ -161,6 +205,17 @@ const storiesSlice = createSlice({
 			.addCase(rateStory.rejected, (state, action) => {
 				state.status = 'failure';
 				state.error = action.payload as string;
+			})
+			.addCase(checkIfUserRatedStory.pending, (state) => {
+				state.status = 'loading';
+			})
+			.addCase(checkIfUserRatedStory.fulfilled, (state, action) => {
+				state.status = 'success';
+				state.hasAlreadyRated = action.payload.rated;
+			})
+			.addCase(checkIfUserRatedStory.rejected, (state, action) => {
+				state.status = 'failure';
+				state.error = action.error.message!;
 			});
 	},
 });

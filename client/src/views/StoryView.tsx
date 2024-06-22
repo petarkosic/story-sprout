@@ -7,6 +7,8 @@ import type { AppDispatch, RootState } from '../store';
 import { getSentences } from '../features/sentences/sentencesSlice';
 import AddNewSentenceModal from '../components/AddNewSentenceModal';
 import Rating from '../components/Rating';
+import StarRating from '../components/StarRating';
+import { checkIfUserRatedStory } from '../features/stories/storiesSlice';
 
 function StoryView() {
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,6 +18,20 @@ function StoryView() {
 	const { sentences, status } = useSelector(
 		(state: RootState) => state.sentences
 	);
+
+	const user = useSelector((state: RootState) => state.auth.user);
+	const hasAlreadyRated = useSelector(
+		(state: RootState) => state.stories.hasAlreadyRated
+	);
+
+	if (user) {
+		dispatch(
+			checkIfUserRatedStory({
+				story_id: state?.story?.story_id || '',
+				user_id: user?.user_id || '',
+			})
+		);
+	}
 
 	useEffect(() => {
 		if (state?.story?.story_id) {
@@ -40,7 +56,16 @@ function StoryView() {
 									? 'Contribution'
 									: 'Contributions'}
 							</p>
-							<Rating storyId={state.story.story_id} />
+
+							{!user && <StarRating rating={state.story.average_rating} />}
+
+							{user && hasAlreadyRated && (
+								<StarRating rating={state.story.average_rating} />
+							)}
+
+							{user && !hasAlreadyRated && (
+								<Rating storyId={state.story.story_id} />
+							)}
 						</div>
 					</div>
 				</div>
