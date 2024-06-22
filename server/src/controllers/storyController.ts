@@ -111,3 +111,29 @@ export const rateStory = async (req: Request, res: Response) => {
 		dbClient.release();
 	}
 };
+
+export const checkIfUserRatedStory = async (req: Request, res: Response) => {
+	const dbClient = await StoryService.connect();
+	const { story_id, user_id } = req.body;
+
+	try {
+		const result = await StoryService.checkIfUserRatedStory(
+			dbClient,
+			story_id,
+			user_id
+		);
+
+		res.status(200).json({
+			rated: !!result,
+			message: result
+				? 'User already rated this story'
+				: 'User has not rated this story',
+		});
+	} catch (err) {
+		const error = err as Error;
+		console.error(error.message);
+		res.status(500).json({ success: false, message: error.message });
+	} finally {
+		dbClient.release();
+	}
+};

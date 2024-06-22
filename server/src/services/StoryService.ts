@@ -165,6 +165,28 @@ class StoryService {
 			throw error;
 		}
 	}
+
+	async checkIfUserRatedStory(
+		dbClient: PoolClient,
+		story_id: string,
+		user_id: string
+	) {
+		try {
+			dbClient.query('BEGIN');
+
+			const result = await dbClient.query(
+				'SELECT * FROM ratings WHERE story_id = $1 AND user_id = $2',
+				[story_id, user_id]
+			);
+
+			dbClient.query('COMMIT');
+
+			return (result.rowCount || 0) > 0;
+		} catch (error) {
+			dbClient.query('ROLLBACK');
+			throw error;
+		}
+	}
 }
 
 export default new StoryService();
