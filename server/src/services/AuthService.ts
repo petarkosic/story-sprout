@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import pool from '../db/db';
 import type { Pool, PoolClient } from 'pg';
-import type { User, Error } from '../../../shared/utils/types';
+import type { User } from '../../../shared/utils/types';
 
 config();
 
@@ -78,46 +78,60 @@ class AuthService {
 				refreshToken,
 				message: 'Login successful',
 			};
-		} catch (err) {
+		} catch (error) {
 			await dbClient.query('ROLLBACK');
-			const error = err as Error;
-			console.error(error.message);
-			throw new Error(error.message);
+			throw error;
 		}
 	}
 
 	async register(dbClient: PoolClient, userObj: User) {
 		const { firstName, lastName, email, password } = userObj;
+		let { nickname } = userObj;
 
-		try {
-			await dbClient.query('BEGIN');
+		if (!nickname) {
+			nickname = await this.generateNickname(firstName, lastName);
+		}
 
-			const query = 'SELECT * FROM users WHERE email = $1';
+		while (true) {
+			try {
+				await dbClient.query('BEGIN');
 
-			const isUnique = await dbClient.query(query, [email]);
+				const queryNickname = 'SELECT * FROM users WHERE nickname = $1';
 
-			if (isUnique.rows.length > 0) {
-				throw new Error('Email already exists');
+				const isUniqueNickname = await dbClient.query(queryNickname, [
+					nickname,
+				]);
+
+				if (isUniqueNickname.rows.length > 0) {
+					nickname = await this.generateNickname(firstName, lastName);
+					continue;
+				}
+
+				const queryEmail = 'SELECT * FROM users WHERE email = $1';
+
+				const isUniqueEmail = await dbClient.query(queryEmail, [email]);
+
+				if (isUniqueEmail.rows.length > 0) {
+					throw new Error('Email already exists');
+				}
+
+				const hashedPassword = await bcrypt.hash(password, 10);
+
+				const result = await dbClient.query(
+					'INSERT INTO users (first_name, last_name, nickname, email, password) VALUES ($1, $2, $3, $4, $5) RETURNING user_id, first_name, last_name, nickname, email',
+					[firstName, lastName, nickname, email, hashedPassword]
+				);
+
+				await dbClient.query('COMMIT');
+
+				return {
+					user_id: result.rows[0].user_id,
+					message: 'Registration successful',
+				};
+			} catch (error) {
+				await dbClient.query('ROLLBACK');
+				throw error;
 			}
-
-			const hashedPassword = await bcrypt.hash(password, 10);
-
-			const result = await dbClient.query(
-				'INSERT INTO users (first_name, last_name, email, password) VALUES ($1, $2, $3, $4) RETURNING user_id, first_name, last_name, email',
-				[firstName, lastName, email, hashedPassword]
-			);
-
-			await dbClient.query('COMMIT');
-
-			return {
-				user_id: result.rows[0].user_id,
-				message: 'Registration successful',
-			};
-		} catch (err) {
-			await dbClient.query('ROLLBACK');
-			const error = err as Error;
-			console.error(error.message);
-			throw new Error(error.message);
 		}
 	}
 
@@ -130,11 +144,14 @@ class AuthService {
 			const newAccessToken = this.generateAccessToken(id);
 
 			return { newAccessToken };
-		} catch (err) {
-			const error = err as Error;
-			console.error(error.message);
-			throw new Error(error.message);
+		} catch (error) {
+			throw error;
 		}
+	}
+
+	async generateNickname(firstName: string, lastName: string) {
+		const randomNumber = Math.floor(Math.random() * 1000);
+		return `${firstName.toLowerCase()}-${lastName.toLowerCase()}-${randomNumber}`;
 	}
 }
 
