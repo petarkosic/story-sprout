@@ -19,7 +19,6 @@ const Login = ({ toggleView }: LoginProps) => {
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 
-		// @ts-expect-error - Expected 0 arguments, but got 1.
 		dispatch(loginUser({ email, password }));
 
 		navigate('/');
@@ -31,19 +30,24 @@ const Login = ({ toggleView }: LoginProps) => {
 			<h2>Login</h2>
 			<form onSubmit={handleSubmit}>
 				<div>
-					<label>Email:</label>
+					<label htmlFor='email'>Email:</label>
 					<input
 						type='email'
+						id='email'
 						name='email'
+						required
+						autoFocus
 						value={email}
 						onChange={(e) => setEmail(e.target.value)}
 					/>
 				</div>
 				<div>
-					<label>Password:</label>
+					<label htmlFor='password'>Password:</label>
 					<input
 						type='password'
+						id='password'
 						name='password'
+						required
 						value={password}
 						onChange={(e) => setPassword(e.target.value)}
 					/>

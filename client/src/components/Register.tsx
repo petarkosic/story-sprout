@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { registerUser } from '../features/auth/authSlice';
+import { checkNickname, registerUser } from '../features/auth/authSlice';
+import { AppDispatch, RootState } from '../store';
+import { useDebounce } from '../hooks/useDebounce';
 
 type RegisterProps = {
 	toggleView: () => void;
@@ -9,15 +11,26 @@ type RegisterProps = {
 const Register = ({ toggleView }: RegisterProps) => {
 	const [firstName, setFirstName] = useState<string>('');
 	const [lastName, setLastName] = useState<string>('');
+	const [nickname, setNickname] = useState<string>('');
 	const [email, setEmail] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
-	const dispatch = useDispatch();
-	const { status, error } = useSelector((state) => state.auth);
+	const dispatch = useDispatch<AppDispatch>();
+	const { status, error, isNicknameAvailable } = useSelector(
+		(state: RootState) => state.auth
+	);
+
+	const debouncedNickname = useDebounce<string>(nickname, 1000);
+
+	useEffect(() => {
+		if (nickname) {
+			dispatch(checkNickname(nickname));
+		}
+	}, [debouncedNickname]);
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 
-		dispatch(registerUser({ firstName, lastName, email, password }));
+		dispatch(registerUser({ firstName, lastName, nickname, email, password }));
 
 		if (status === 'success') {
 			toggleView();
@@ -29,42 +42,80 @@ const Register = ({ toggleView }: RegisterProps) => {
 			<h2>Register</h2>
 			<form onSubmit={handleSubmit}>
 				<div>
-					<label>First Name:</label>
+					<label htmlFor='first_name'>First Name:</label>
 					<input
 						type='text'
+						id='first_name'
 						name='first_name'
+						required
+						autoFocus
 						value={firstName}
 						onChange={(e) => setFirstName(e.target.value)}
 					/>
 				</div>
 				<div>
-					<label>Last Name:</label>
+					<label htmlFor='last_name'>Last Name:</label>
 					<input
 						type='text'
+						id='last_name'
 						name='last_name'
+						required
 						value={lastName}
 						onChange={(e) => setLastName(e.target.value)}
 					/>
 				</div>
 				<div>
-					<label>Email:</label>
+					<label htmlFor='nickname'>
+						Nickname:
+						<span className='tooltip'>
+							&#9432;
+							<div className='tooltip-text'>
+								- If not provided, it will be generated automatically.
+								<br />- Can be changed later.
+							</div>
+						</span>
+					</label>
+
+					<input
+						type='text'
+						id='nickname'
+						name='nickname'
+						className={isNicknameAvailable ? 'unavailable' : 'available'}
+						value={nickname}
+						onChange={(e) => setNickname(e.target.value)}
+					/>
+
+					{isNicknameAvailable ? (
+						<button className='check-if-available'>&#x2715;</button>
+					) : (
+						<button className='check-if-available'>&#x2713;</button>
+					)}
+				</div>
+				<div>
+					<label htmlFor='email'>Email:</label>
 					<input
 						type='email'
+						id='email'
 						name='email'
+						required
 						value={email}
 						onChange={(e) => setEmail(e.target.value)}
 					/>
 				</div>
 				<div>
-					<label>Password:</label>
+					<label htmlFor='password'>Password:</label>
 					<input
 						type='password'
+						id='password'
 						name='password'
+						required
 						value={password}
 						onChange={(e) => setPassword(e.target.value)}
 					/>
 				</div>
-				<button type='submit'>Register</button>
+				<button disabled={isNicknameAvailable} type='submit'>
+					Register
+				</button>
 			</form>
 			{status === 'loading' && <p>Loading...</p>}
 			{error && <p>{error}</p>}
