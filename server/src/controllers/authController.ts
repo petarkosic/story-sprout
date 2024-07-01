@@ -66,6 +66,23 @@ export const register = async (req: Request, res: Response) => {
 	}
 };
 
+export const checkNickname = async (req: Request, res: Response) => {
+	const dbClient = await AuthService.connect();
+	const { nickname } = req.query;
+
+	try {
+		const user = await AuthService.checkNickname(dbClient, nickname as string);
+
+		res.status(200).json({ user });
+	} catch (err) {
+		const error = err as Error;
+		console.error(error.message);
+		res.status(500).json({ message: error.message });
+	} finally {
+		dbClient.release();
+	}
+};
+
 export const refreshToken = async (req: Request, res: Response) => {
 	const { refreshToken } = req.cookies;
 
