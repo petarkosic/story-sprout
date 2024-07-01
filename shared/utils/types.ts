@@ -37,6 +37,7 @@ export type Error = {
 export type User = {
 	firstName: string;
 	lastName: string;
+	nickname: string;
 	email: string;
 	password: string;
 };
