@@ -40,7 +40,7 @@ class AuthService {
 			await dbClient.query('BEGIN');
 
 			const query =
-				'SELECT user_id, first_name, last_name, email, password FROM users WHERE email = $1';
+				'SELECT user_id, first_name, last_name, nickname, email, password FROM users WHERE email = $1';
 
 			const result = await dbClient.query(query, [email]);
 
@@ -61,6 +61,7 @@ class AuthService {
 				user_id,
 				first_name,
 				last_name,
+				nickname,
 				email: userEmail,
 			} = result.rows[0];
 
@@ -73,6 +74,7 @@ class AuthService {
 				user_id,
 				first_name,
 				last_name,
+				nickname,
 				email: userEmail,
 				accessToken,
 				refreshToken,

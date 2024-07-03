@@ -21,6 +21,7 @@ export const login = async (req: Request, res: Response) => {
 			email: userEmail,
 			first_name,
 			last_name,
+			nickname,
 		} = user;
 
 		res.cookie('refreshToken', refreshToken, {
@@ -36,6 +37,7 @@ export const login = async (req: Request, res: Response) => {
 			email: userEmail,
 			first_name,
 			last_name,
+			nickname,
 		});
 	} catch (err) {
 		const error = err as Error;
