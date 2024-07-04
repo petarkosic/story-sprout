@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { checkNickname, registerUser } from '../features/auth/authSlice';
+import { registerUser } from '../features/auth/authSlice';
 import { AppDispatch, RootState } from '../store';
 import { useDebounce } from '../hooks/useDebounce';
+import { checkNickname } from '../features/users/usersSlice';
 
 type RegisterProps = {
 	toggleView: () => void;
@@ -16,7 +17,7 @@ const Register = ({ toggleView }: RegisterProps) => {
 	const [password, setPassword] = useState<string>('');
 	const dispatch = useDispatch<AppDispatch>();
 	const { status, error, isNicknameAvailable } = useSelector(
-		(state: RootState) => state.auth
+		(state: RootState) => state.users
 	);
 
 	const debouncedNickname = useDebounce<string>(nickname, 1000);
@@ -86,9 +87,9 @@ const Register = ({ toggleView }: RegisterProps) => {
 					/>
 
 					{isNicknameAvailable ? (
-						<button className='check-if-available'>&#x2715;</button>
+						<span className='check-if-available'>&#x2715;</span>
 					) : (
-						<button className='check-if-available'>&#x2713;</button>
+						<span className='check-if-available'>&#x2713;</span>
 					)}
 				</div>
 				<div>
