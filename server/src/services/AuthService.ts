@@ -137,23 +137,6 @@ class AuthService {
 		}
 	}
 
-	async checkNickname(dbClient: PoolClient, nickname: string) {
-		try {
-			await dbClient.query('BEGIN');
-
-			const query = 'SELECT * FROM users WHERE nickname = $1';
-
-			const result = await dbClient.query(query, [nickname]);
-
-			await dbClient.query('COMMIT');
-
-			return result.rows.length > 0;
-		} catch (error) {
-			await dbClient.query('ROLLBACK');
-			throw error;
-		}
-	}
-
 	async refreshToken(refreshToken: string) {
 		try {
 			const { id } = jwt.verify(refreshToken, REFRESH_TOKEN_SECRET) as {
