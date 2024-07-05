@@ -28,6 +28,28 @@ class UsersService {
 			throw error;
 		}
 	}
+
+	async changeNickname(
+		dbClient: PoolClient,
+		nickname: string,
+		user_id: string
+	) {
+		try {
+			await dbClient.query('BEGIN');
+
+			const query =
+				'UPDATE users SET nickname = $1 WHERE user_id = $2 RETURNING nickname';
+
+			const newNickname = await dbClient.query(query, [nickname, user_id]);
+
+			await dbClient.query('COMMIT');
+
+			return newNickname.rows[0].nickname;
+		} catch (error) {
+			await dbClient.query('ROLLBACK');
+			throw error;
+		}
+	}
 }
 
 export default new UsersService();

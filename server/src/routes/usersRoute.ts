@@ -1,8 +1,10 @@
 import { Router } from 'express';
-import { checkNickname } from '../controllers/usersController';
+import verifyToken from '../middleware/verifyToken';
+import { changeNickname, checkNickname } from '../controllers/usersController';
 
 const router = Router();
 
 router.get('/check-nickname', checkNickname);
+router.post('/change-nickname', verifyToken, changeNickname);
 
 export default router;
