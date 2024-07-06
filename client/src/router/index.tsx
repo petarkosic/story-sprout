@@ -4,6 +4,7 @@ import HomeView from '../views/HomeView';
 import StoryView from '../views/StoryView';
 import AuthView from '../views/AuthView';
 import NotFound from '../views/NotFound';
+import Profile from '../views/Profile';
 
 const router = createBrowserRouter([
 	{
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
 			{
 				path: '/story/:id',
 				element: <StoryView />,
+			},
+			{
+				path: '/profile',
+				element: <Profile />,
 			},
 			{
 				path: '/auth',

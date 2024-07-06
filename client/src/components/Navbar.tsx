@@ -54,9 +54,11 @@ const Navbar = () => {
 				<p onClick={() => navigate('/')}>logo</p>
 				{user?.first_name ? (
 					<div className='user-info'>
-						<div>
-							{user?.first_name} {user?.last_name[0] + '.'}
-						</div>
+						{!location.href.includes('profile') && (
+							<div onClick={() => navigate('/profile')}>
+								{user?.first_name} {user?.last_name[0] + '.'}
+							</div>
+						)}
 						<div
 							className='add-story-button'
 							onClick={() => setIsModalOpen(true)}
