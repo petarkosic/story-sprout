@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
+	newNickname: '',
 	status: 'idle',
 	error: '',
 	isNicknameAvailable: false,
@@ -34,11 +35,49 @@ export const checkNickname = createAsyncThunk(
 	}
 );
 
+export const changeNickname = createAsyncThunk(
+	'auth/changeNickname',
+	async (
+		{ user_id, nickname }: { user_id: string; nickname: string },
+		{ rejectWithValue }
+	) => {
+		try {
+			const response = await fetch(
+				'http://localhost:5000/api/v1/users/change-nickname',
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+					},
+					credentials: 'include',
+					body: JSON.stringify({ user_id, nickname }),
+				}
+			);
+
+			const data = await response.json();
+
+			if (response.ok) {
+				const storedUser = JSON.parse(localStorage.getItem('user')!);
+				storedUser.nickname = nickname;
+				localStorage.setItem('user', JSON.stringify(storedUser));
+
+				return data;
+			} else {
+				return rejectWithValue(data.message);
+			}
+		} catch (error) {
+			return rejectWithValue(error);
+		}
+	}
+);
+
 const usersSlice = createSlice({
-	name: 'auth',
+	name: 'users',
 	initialState,
 	reducers: {
 		clearState: (state) => {
+			state.newNickname = '';
 			state.error = '';
 			state.status = 'idle';
 			state.isNicknameAvailable = false;
@@ -48,7 +87,6 @@ const usersSlice = createSlice({
 	},
 	extraReducers: (builder) => {
 		builder
-
 			.addCase(checkNickname.pending, (state) => {
 				state.status = 'loading';
 				state.isNicknameAvailable = false;
@@ -60,6 +98,16 @@ const usersSlice = createSlice({
 			.addCase(checkNickname.rejected, (state) => {
 				state.status = 'failure';
 				state.isNicknameAvailable = false;
+			})
+			.addCase(changeNickname.pending, (state) => {
+				state.status = 'loading';
+			})
+			.addCase(changeNickname.fulfilled, (state, action) => {
+				state.status = 'success';
+				state.newNickname = action.payload.newNickname;
+			})
+			.addCase(changeNickname.rejected, (state) => {
+				state.status = 'failure';
 			});
 	},
 });
