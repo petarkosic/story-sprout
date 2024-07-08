@@ -50,6 +50,23 @@ class UsersService {
 			throw error;
 		}
 	}
+
+	async getUsersStories(dbClient: PoolClient, user_id: string) {
+		try {
+			await dbClient.query('BEGIN');
+
+			const query = 'SELECT * FROM stories WHERE user_id = $1';
+
+			const result = await dbClient.query(query, [user_id]);
+
+			await dbClient.query('COMMIT');
+
+			return result.rows;
+		} catch (error) {
+			await dbClient.query('ROLLBACK');
+			throw error;
+		}
+	}
 }
 
 export default new UsersService();

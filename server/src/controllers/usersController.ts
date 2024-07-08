@@ -43,3 +43,20 @@ export const changeNickname = async (req: Request, res: Response) => {
 		dbClient.release();
 	}
 };
+
+export const getUsersStories = async (req: Request, res: Response) => {
+	const dbClient = await UsersService.connect();
+	const { user_id } = req.params;
+
+	try {
+		const stories = await UsersService.getUsersStories(dbClient, user_id);
+
+		res.status(200).json({ stories });
+	} catch (err) {
+		const error = err as Error;
+		console.error(error.message);
+		res.status(500).json({ message: error.message });
+	} finally {
+		dbClient.release();
+	}
+};
