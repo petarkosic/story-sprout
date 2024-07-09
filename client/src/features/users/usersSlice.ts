@@ -5,6 +5,8 @@ const initialState = {
 	status: 'idle',
 	error: '',
 	isNicknameAvailable: false,
+	stories: [],
+	sentences: [],
 };
 
 export const checkNickname = createAsyncThunk(
@@ -72,6 +74,62 @@ export const changeNickname = createAsyncThunk(
 	}
 );
 
+export const getUsersStories = createAsyncThunk(
+	'users/getUsersStories',
+	async (user_id: string, { rejectWithValue }) => {
+		try {
+			const response = await fetch(
+				`http://localhost:5000/api/v1/users/${user_id}/stories`,
+				{
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					credentials: 'include',
+				}
+			);
+
+			const data = await response.json();
+
+			if (response.ok) {
+				return data.stories;
+			} else {
+				return rejectWithValue(data.message);
+			}
+		} catch (error) {
+			return rejectWithValue(error);
+		}
+	}
+);
+
+export const getUsersSentences = createAsyncThunk(
+	'users/getUsersSentences',
+	async (user_id: string, { rejectWithValue }) => {
+		try {
+			const response = await fetch(
+				`http://localhost:5000/api/v1/users/${user_id}/sentences`,
+				{
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					credentials: 'include',
+				}
+			);
+
+			const data = await response.json();
+
+			if (response.ok) {
+				return data.sentences;
+			} else {
+				return rejectWithValue(data.message);
+			}
+		} catch (error) {
+			return rejectWithValue(error);
+		}
+	}
+);
+
 const usersSlice = createSlice({
 	name: 'users',
 	initialState,
@@ -107,6 +165,26 @@ const usersSlice = createSlice({
 				state.newNickname = action.payload.newNickname;
 			})
 			.addCase(changeNickname.rejected, (state) => {
+				state.status = 'failure';
+			})
+			.addCase(getUsersStories.pending, (state) => {
+				state.status = 'loading';
+			})
+			.addCase(getUsersStories.fulfilled, (state, action) => {
+				state.status = 'success';
+				state.stories = action.payload;
+			})
+			.addCase(getUsersStories.rejected, (state) => {
+				state.status = 'failure';
+			})
+			.addCase(getUsersSentences.pending, (state) => {
+				state.status = 'loading';
+			})
+			.addCase(getUsersSentences.fulfilled, (state, action) => {
+				state.status = 'success';
+				state.sentences = action.payload;
+			})
+			.addCase(getUsersSentences.rejected, (state) => {
 				state.status = 'failure';
 			});
 	},
