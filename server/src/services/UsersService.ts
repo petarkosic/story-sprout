@@ -67,6 +67,36 @@ class UsersService {
 			throw error;
 		}
 	}
+
+	async getUsersSentences(dbClient: PoolClient, user_id: string) {
+		try {
+			await dbClient.query('BEGIN');
+
+			const query = `
+				SELECT
+					s.sentence_id, 
+					s.story_id,
+					s.parent_sentence_id, 
+					s.content,
+					s.created_at,
+					st.story_headline,
+					st.user_id
+				FROM sentences s 
+				LEFT JOIN stories st 
+				ON s.story_id = st.story_id 
+				WHERE st.user_id = $1
+				ORDER BY s.created_at DESC;
+				`;
+			const result = await dbClient.query(query, [user_id]);
+
+			await dbClient.query('COMMIT');
+
+			return result.rows;
+		} catch (error) {
+			await dbClient.query('ROLLBACK');
+			throw error;
+		}
+	}
 }
 
 export default new UsersService();
