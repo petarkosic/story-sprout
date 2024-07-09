@@ -41,3 +41,19 @@ export type User = {
 	email: string;
 	password: string;
 };
+
+export type TUserStories = {
+	story_headline: string;
+	story_id: number;
+	user_id: number;
+};
+
+export type TUserSentences = {
+	content: string;
+	created_at: Date;
+	parent_sentence_id: number;
+	sentence_id: number;
+	story_headline: string;
+	story_id: number;
+	user_id: number;
+};
