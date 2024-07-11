@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../store';
+import type { AppDispatch, RootState } from '../store';
 import { useEffect, useState } from 'react';
 import { useDebounce } from '../hooks/useDebounce';
 import {
@@ -31,7 +31,7 @@ const Profile = () => {
 		if (nickname) {
 			dispatch(checkNickname(nickname));
 		}
-	}, [debouncedNickname]);
+	}, [debouncedNickname, dispatch, nickname]);
 
 	useEffect(() => {
 		if (user?.user_id) {

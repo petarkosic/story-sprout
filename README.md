@@ -17,6 +17,7 @@ StorySprout is a collaborative storytelling platform where users can collectivel
 - **Branching Narratives**: Explore different story paths and contribute to multiple branches.
 - **Story Path**: Choose a sentence to see the story so far.
 - **Story Rating**: Rate the story and see the average rating.
+- **User Profile**: See your profile and contributions.
 
 <br/>
 
@@ -81,4 +82,4 @@ Open your browser and go to http://localhost:3000 to view the app.
 - [x] **Create Stories**: Allow users to create a new story.
 - [x] **Rating System**: Allow users to rate other users' stories.
 - [x] **User Nickname**: Allow users to set a nickname and use it to identify themselves.
-- [ ] **User Profile**: Show users their profile and their contributions.
+- [x] **User Profile**: Show users their profile and their contributions.
