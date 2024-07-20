@@ -5,12 +5,14 @@ import { useDebounce } from '../hooks/useDebounce';
 import {
 	changeNickname,
 	checkNickname,
+	getUsersRated,
 	getUsersSentences,
 	getUsersStories,
 } from '../features/users/usersSlice';
 import { useNavigate } from 'react-router-dom';
 import { UserStories } from '../components/UserStories';
 import { UserSentences } from '../components/UserSentences';
+import UserRated from '../components/UserRated';
 
 const Profile = () => {
 	const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -19,7 +21,9 @@ const Profile = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch<AppDispatch>();
 	const user = useSelector((state: RootState) => state.auth.user);
-	const { stories, sentences } = useSelector((state: RootState) => state.users);
+	const { stories, sentences, rated } = useSelector(
+		(state: RootState) => state.users
+	);
 
 	const { isNicknameAvailable } = useSelector(
 		(state: RootState) => state.users
@@ -69,6 +73,10 @@ const Profile = () => {
 
 		if (tab === 'sentences') {
 			dispatch(getUsersSentences(user?.user_id));
+		}
+
+		if (tab === 'rated') {
+			dispatch(getUsersRated(user?.user_id));
 		}
 	}
 
@@ -134,13 +142,20 @@ const Profile = () => {
 				>
 					Sentences
 				</div>
+
+				<div
+					className={`profile-rated ${activeTab == 'rated' ? 'active' : ''}`}
+					onClick={() => handleTabChange('rated')}
+				>
+					Rated
+				</div>
 			</div>
 
-			{activeTab == 'stories' ? (
-				<UserStories stories={stories} />
-			) : (
-				<UserSentences sentences={sentences} />
-			)}
+			{activeTab == 'stories' && <UserStories stories={stories} />}
+
+			{activeTab == 'sentences' && <UserSentences sentences={sentences} />}
+
+			{activeTab == 'rated' && <UserRated rated={rated} />}
 		</div>
 	);
 };

@@ -57,3 +57,9 @@ export type TUserSentences = {
 	story_id: number;
 	user_id: number;
 };
+
+export type TUserRated = {
+	story_id: number;
+	story_headline: string;
+	rating: number;
+};
