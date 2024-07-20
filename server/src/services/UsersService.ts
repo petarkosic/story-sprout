@@ -97,6 +97,31 @@ class UsersService {
 			throw error;
 		}
 	}
+
+	async getUsersRated(dbClient: PoolClient, user_id: string) {
+		try {
+			await dbClient.query('BEGIN');
+
+			const query = `
+				SELECT 
+					s.story_id,
+					s.story_headline,
+					r.rating
+				FROM stories s
+				JOIN ratings r ON s.story_id = r.story_id
+				WHERE r.user_id = $1;
+			`;
+
+			const result = await dbClient.query(query, [user_id]);
+
+			await dbClient.query('COMMIT');
+
+			return result.rows;
+		} catch (error) {
+			await dbClient.query('ROLLBACK');
+			throw error;
+		}
+	}
 }
 
 export default new UsersService();
