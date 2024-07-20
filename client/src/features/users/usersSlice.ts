@@ -7,6 +7,7 @@ const initialState = {
 	isNicknameAvailable: false,
 	stories: [],
 	sentences: [],
+	rated: [],
 };
 
 export const checkNickname = createAsyncThunk(
@@ -130,6 +131,34 @@ export const getUsersSentences = createAsyncThunk(
 	}
 );
 
+export const getUsersRated = createAsyncThunk(
+	'users/getUsersRated',
+	async (user_id: string, { rejectWithValue }) => {
+		try {
+			const response = await fetch(
+				`http://localhost:5000/api/v1/users/${user_id}/rated`,
+				{
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					credentials: 'include',
+				}
+			);
+
+			const data = await response.json();
+
+			if (response.ok) {
+				return data.rated;
+			} else {
+				return rejectWithValue(data.message);
+			}
+		} catch (error) {
+			return rejectWithValue(error);
+		}
+	}
+);
+
 const usersSlice = createSlice({
 	name: 'users',
 	initialState,
@@ -185,6 +214,16 @@ const usersSlice = createSlice({
 				state.sentences = action.payload;
 			})
 			.addCase(getUsersSentences.rejected, (state) => {
+				state.status = 'failure';
+			})
+			.addCase(getUsersRated.pending, (state) => {
+				state.status = 'loading';
+			})
+			.addCase(getUsersRated.fulfilled, (state, action) => {
+				state.status = 'success';
+				state.rated = action.payload;
+			})
+			.addCase(getUsersRated.rejected, (state) => {
 				state.status = 'failure';
 			});
 	},
