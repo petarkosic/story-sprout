@@ -9,13 +9,11 @@ export const UserSentences = ({
 	return (
 		<div className='sentences-container'>
 			{sentences?.map((sentence: TUserSentences) => (
-				<>
-					<div key={sentence.sentence_id} className='user-sentence'>
-						<p>{sentence.story_headline}</p>
-						<span>{sentence.content}</span>
-						<p>{formatDate(sentence.created_at)}</p>
-					</div>
-				</>
+				<div key={sentence.sentence_id} className='user-sentence'>
+					<p>{sentence.story_headline}</p>
+					<span>{sentence.content}</span>
+					<p>{formatDate(sentence.created_at)}</p>
+				</div>
 			))}
 		</div>
 	);

@@ -57,16 +57,14 @@ function StoryView() {
 									: 'Contributions'}
 							</p>
 
-							{(!user || user.user_id == state.story.user_id) && (
+							{user ? (
+								hasAlreadyRated ? (
+									<StarRating rating={state.story.average_rating} />
+								) : (
+									<Rating storyId={state.story.story_id} />
+								)
+							) : (
 								<StarRating rating={state.story.average_rating} />
-							)}
-
-							{user && hasAlreadyRated && (
-								<StarRating rating={state.story.average_rating} />
-							)}
-
-							{user && !hasAlreadyRated && (
-								<Rating storyId={state.story.story_id} />
 							)}
 						</div>
 					</div>
