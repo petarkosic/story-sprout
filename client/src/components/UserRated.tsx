@@ -1,12 +1,18 @@
 import { useNavigate } from 'react-router-dom';
-import { TUserRated } from '../../../shared/utils/types';
+import { useSelector } from 'react-redux';
+import type { Story, TUserRated } from '../../../shared/utils/types';
+import type { RootState } from '../store';
 import StarRating from './StarRating';
 
 const UserRated = ({ rated }: { rated: TUserRated[] }) => {
 	const navigate = useNavigate();
 
+	const storiesList: Story[] = useSelector(
+		(state: RootState) => state.stories.stories
+	);
+
 	function handleClick(storyId: number) {
-		const story = rated.find((story) => story.story_id === storyId);
+		const story = storiesList.find((story) => story.story_id === storyId);
 
 		if (!story) return;
 
