@@ -1,0 +1,52 @@
+services:
+  postgres:
+    image: 'postgres:latest'
+    container_name: ss-postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - ./postgres-data-dev:/var/lib/postgresql/data
+      - ./server/src/db/migrations:/docker-entrypoint-initdb.d
+    networks:
+      - story-sprout-net
+
+  server:
+    build:
+      context: server
+    container_name: ss-server
+    depends_on:
+      - postgres
+    env_file:
+      - /server/.env
+    ports:
+      - 5000:5000
+    volumes:
+      - ./shared:/app/shared
+      - /app/node_modules
+      - ./server:/app
+    networks:
+      - story-sprout-net
+
+  client:
+    build:
+      context: client
+    container_name: ss-client
+    depends_on:
+      - server
+    ports:
+      - 3000:3000
+    volumes:
+      - ./shared:/app/shared
+      - /app/node_modules
+      - ./client:/app
+    networks:
+      - story-sprout-net
+
+networks:
+  story-sprout-net:
+
+volumes:
+  postgres-data-dev:
