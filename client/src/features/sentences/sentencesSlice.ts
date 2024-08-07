@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { NewSentence, Sentence } from '../../../../shared/utils/types';
+// @ts-expect-error When running inside docker container, this import works.
+import { NewSentence, Sentence } from '../../shared/utils/types';
 import { convertToHierarchy } from '../../utils/convertToHierarchy';
 import { refreshToken } from '../auth/authSlice';
 

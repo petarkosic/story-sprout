@@ -1,4 +1,5 @@
-import { Sentence } from '../../../shared/utils/types';
+// @ts-expect-error When running inside docker container, this import works.
+import type { Sentence } from '../../shared/utils/types';
 
 export const findSentenceById = (
 	sentences: Sentence[],

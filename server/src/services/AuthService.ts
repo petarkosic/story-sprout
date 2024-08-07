@@ -3,7 +3,8 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import pool from '../db/db';
 import type { Pool, PoolClient } from 'pg';
-import type { User } from '../../../shared/utils/types';
+// @ts-expect-error When running inside docker container, this import works.
+import type { User } from '../../shared/utils/types';
 
 config();
 

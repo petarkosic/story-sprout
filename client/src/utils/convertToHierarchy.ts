@@ -1,4 +1,5 @@
-import { Sentence } from '../../../shared/utils/types';
+// @ts-expect-error When running inside docker container, this import works.
+import { Sentence } from '../../shared/utils/types';
 
 // // Function to convert flat data to hierarchical structure
 export async function convertToHierarchy(

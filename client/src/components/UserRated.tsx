@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import type { Story, TUserRated } from '../../../shared/utils/types';
+// @ts-expect-error When running inside docker container, this import works.
+import type { Story, TUserRated } from '../../shared/utils/types';
 import type { RootState } from '../store';
 import StarRating from './StarRating';
 

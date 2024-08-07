@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import UsersService from '../services/UsersService';
-import type { Error } from '../../../shared/utils/types';
+// @ts-expect-error When running inside docker container, this import works.
+import type { Error } from '../../shared/utils/types';
 
 export const checkNickname = async (req: Request, res: Response) => {
 	const dbClient = await UsersService.connect();

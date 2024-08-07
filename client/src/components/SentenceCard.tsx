@@ -1,6 +1,7 @@
 import { SetStateAction, useState } from 'react';
 import { useSelector } from 'react-redux';
-import type { Sentence } from '../../../shared/utils/types';
+// @ts-expect-error When running inside docker container, this import works.
+import type { Sentence } from '../../shared/utils/types';
 import type { RootState } from '../store';
 import StoryPath from './StoryPath';
 import { formatDate } from '../utils/formatDate';

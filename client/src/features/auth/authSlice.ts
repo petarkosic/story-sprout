@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { User } from '../../../../shared/utils/types';
+// @ts-expect-error When running inside docker container, this import works.
+import type { User } from '../../shared/utils/types';
 
 const initialState = {
 	user: JSON.parse(localStorage.getItem('user')!) || null,

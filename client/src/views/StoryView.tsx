@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useLocation, ScrollRestoration } from 'react-router-dom';
 import SentenceNode from '../components/SentenceNode';
-import type { Sentence } from '../../../shared/utils/types';
+// @ts-expect-error When running inside docker container, this import works.
+import type { Sentence } from '../../shared/utils/types';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../store';
 import { getSentences } from '../features/sentences/sentencesSlice';

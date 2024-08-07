@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import type { Sentence } from '../../../shared/utils/types';
+// @ts-expect-error When running inside docker container, this import works.
+import type { Sentence } from '../../shared/utils/types';
 import SentenceCard from './SentenceCard';
 import AddNewSentenceModal from './AddNewSentenceModal';
 

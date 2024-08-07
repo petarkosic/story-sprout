@@ -1,9 +1,10 @@
 import { SetStateAction, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { AppDispatch, RootState } from '../store';
+import type { AppDispatch, RootState } from '../store';
 import { addSentence } from '../features/sentences/sentencesSlice';
-import { NewSentence, Sentence } from '../../../shared/utils/types';
+// @ts-expect-error When running inside docker container, this import works.
+import type { NewSentence, Sentence } from '../../shared/utils/types';
 import { clearState } from '../features/auth/authSlice';
 
 type AddNewSentenceModalProps = {

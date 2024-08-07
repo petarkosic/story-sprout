@@ -1,7 +1,8 @@
 import { config } from 'dotenv';
 import pool from '../db/db';
 import type { Pool, PoolClient } from 'pg';
-import type { NewSentence } from '../../../shared/utils/types';
+// @ts-expect-error When running inside docker container, this import works.
+import type { NewSentence } from '../../shared/utils/types';
 
 config();
 

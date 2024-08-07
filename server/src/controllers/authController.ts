@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import AuthService from '../services/AuthService';
-import type { Error } from '../../../shared/utils/types';
+// @ts-expect-error When running inside docker container, this import works.
+import type { Error } from '../../shared/utils/types';
 
 export const login = async (req: Request, res: Response) => {
 	const dbClient = await AuthService.connect();

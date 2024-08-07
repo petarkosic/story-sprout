@@ -1,5 +1,6 @@
 import { formatDate } from '../utils/formatDate';
-import type { TUserSentences } from '../../../shared/utils/types';
+// @ts-expect-error When running inside docker container, this import works.
+import type { TUserSentences } from '../../shared/utils/types';
 
 export const UserSentences = ({
 	sentences,
