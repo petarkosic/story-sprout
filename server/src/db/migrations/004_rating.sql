@@ -1,3 +1,5 @@
+\c story_sprout;
+
 CREATE TABLE ratings (
     rating_id SERIAL,
     story_id INT,

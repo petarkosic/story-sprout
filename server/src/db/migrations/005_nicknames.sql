@@ -1,3 +1,5 @@
+\c story_sprout;
+
 ALTER TABLE users
 ADD COLUMN nickname VARCHAR(255) UNIQUE;
 

@@ -1,3 +1,5 @@
+\c story_sprout;
+
 CREATE TABLE users(
     user_id SERIAL,
     first_name VARCHAR(255) NOT NULL,

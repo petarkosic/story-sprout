@@ -1,3 +1,5 @@
+\c story_sprout;
+
 INSERT INTO stories (story_headline, user_id) 
 VALUES 
 ('Echoes of Eternity', 1),
