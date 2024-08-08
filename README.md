@@ -7,7 +7,8 @@ StorySprout is a collaborative storytelling platform where users can collectivel
 1. [Features](#features)
 2. [Requirements](#requirements)
 3. [How to run](#how-to-run)
-4. [Future Work](#future-work)
+4. [Technology Stack](#technology-stack)
+5. [Future Work](#future-work)
 
 <br/>
 
@@ -21,38 +22,40 @@ StorySprout is a collaborative storytelling platform where users can collectivel
 
 <br/>
 
+## Technology Stack
+
+- **Frontend**: React
+- **Backend**: Node.js with Express
+- **Language**: TypeScript
+- **Database**: PostgreSQL
+
 ## Requirements
 
-- Node.js (https://nodejs.org)
-- PostgreSQL 13.+ (https://www.postgresql.org)
-
-<br/>
+- Docker (https://www.docker.com)
 
 ## How to run
 
-Make sure the postgresql service is running.
+Make sure you have docker installed and running.
+
+<br/>
+
+Clone the repository and change into the directory:
 
 ```
 git clone https://github.com/petarkosic/story-sprout
 cd /story-sprout
-cd /server
-npm install
-
-cd ..
-cd client
-npm install
 ```
 
-Inside `/server` create a `.env` file.
+Inside `/server` folder, create an `.env` file.
 
 ```
 PORT=<app_port>                 (default = 5000)
 
 POSTGRES_USER=<db_user>         (default = postgres)
 POSTGRES_PASSWORD=<db_password>
-POSTGRES_HOST=<db_host>         (default = localhost)
+POSTGRES_HOST=<db_host>         (default = postgres)
 POSTGRES_PORT=<db_port>         (default = 5432)
-POSTGRES_DATABASE=postgres      (default = postgres)
+POSTGRES_DATABASE=postgres      (default = story_sprout)
 
 ACCESS_TOKEN_SECRET=<some_secret>
 REFRESH_TOKEN_SECRET=<some_other_secret>
@@ -60,21 +63,27 @@ ACCESS_TOKEN_LIFETIME='15m'
 REFRESH_TOKEN_LIFETIME='15d'
 ```
 
-To start the server, open `/server` folder and run:
+<br/>
+
+To start the application, from the root project directory run:
 
 ```
-npm run dev
+docker compose up -d
 ```
 
-To start the client, open `/client` folder and run:
+<br/>
 
-```
-npm run dev
-```
+**Note**: Please be patient during the initial setup, as the database is being initialized and seeded with default data.
+
+<br/>
 
 Open your browser and go to http://localhost:3000 to view the app.
 
-<br/>
+To stop the application, run:
+
+```
+docker compose down
+```
 
 ## Future Work
 
